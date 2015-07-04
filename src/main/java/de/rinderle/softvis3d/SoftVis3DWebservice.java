@@ -57,7 +57,8 @@ public class SoftVis3DWebservice implements WebService {
     controller.setDescription("SoftVis3D webservice");
 
     controller.createAction("getConfig").setDescription("Get config for snapshot").setHandler(this.configHandler)
-      .createParam("snapshotId", "Snapshot id");
+      .createParam("snapshotId", "Snapshot id")
+      .createParam("resourceId", "Resource id");
 
     // create the URL /api/softVis3D/getVisualization
     controller.createAction("getVisualization").setDescription("Get getVisualization structure")

@@ -23,6 +23,7 @@ import de.rinderle.softvis3d.dao.DaoService;
 import de.rinderle.softvis3d.domain.Metric;
 import de.rinderle.softvis3d.webservice.config.ConfigWebserviceHandler;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -43,6 +44,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
+@Ignore
 public class ConfigWebserviceHandlerTest {
 
   private final StringWriter stringWriter = new StringWriter();

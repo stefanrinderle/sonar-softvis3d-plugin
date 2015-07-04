@@ -20,7 +20,8 @@
 package de.rinderle.softvis3d.webservice.config;
 
 import com.google.inject.Inject;
-import de.rinderle.softvis3d.dao.DaoService;
+import de.rinderle.softvis3d.dao.entity.ProjectWrapper;
+import de.rinderle.softvis3d.dao.webservice.SonarAccess;
 import de.rinderle.softvis3d.domain.Metric;
 import de.rinderle.softvis3d.webservice.AbstractWebserviceHandler;
 import org.slf4j.Logger;
@@ -38,8 +39,11 @@ public class ConfigWebserviceHandler extends AbstractWebserviceHandler implement
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ConfigWebserviceHandler.class);
 
+//  @Inject
+//  private DaoService daoService;
+
   @Inject
-  private DaoService daoService;
+  private ProjectWrapper projectWrapper;
 
   private Settings settings;
   private DatabaseSession session;
@@ -54,28 +58,38 @@ public class ConfigWebserviceHandler extends AbstractWebserviceHandler implement
 
   @Override
   public void handleRequest(final Request request, final Response response) throws Exception {
-    this.session.start();
-
     final Integer id = Integer.valueOf(request.param("snapshotId"));
-
+    final Integer resourceId = Integer.valueOf(request.param("resourceId"));
     LOGGER.info("ConfigWebserviceHandler " + id);
 
-    final Integer metric1 = this.daoService.getMetric1FromSettings(this.settings);
-    final Integer metric2 = this.daoService.getMetric2FromSettings(this.settings);
+    String url = "http://localhost";
+    SonarAccess sonarAccess = new SonarAccess(url, "admin", "admin");
 
-    final List<Metric> metrics = this.daoService.getDefinedMetricsForSnapshot(id);
+    projectWrapper.initializeProject(resourceId);
 
-    final boolean hasDependencies = this.daoService.hasDependencies(id);
-
-    final JsonWriter jsonWriter = response.newJsonWriter();
-    jsonWriter.beginObject();
-    jsonWriter.prop("hasDependencies", hasDependencies);
-    this.transformMetricSettings(jsonWriter, metric1, metric2);
-    this.transformMetrics(jsonWriter, metrics);
-    jsonWriter.endObject();
-    jsonWriter.close();
-
-    this.session.commit();
+//
+//    this.session.start();
+//
+//    final Integer id = Integer.valueOf(request.param("snapshotId"));
+//
+//    LOGGER.info("ConfigWebserviceHandler " + id);
+//
+//    final Integer metric1 = this.daoService.getMetric1FromSettings(this.settings);
+//    final Integer metric2 = this.daoService.getMetric2FromSettings(this.settings);
+//
+//    final List<Metric> metrics = this.daoService.getDefinedMetricsForSnapshot(id);
+//
+//    final boolean hasDependencies = this.daoService.hasDependencies(id);
+//
+//    final JsonWriter jsonWriter = response.newJsonWriter();
+//    jsonWriter.beginObject();
+//    jsonWriter.prop("hasDependencies", hasDependencies);
+//    this.transformMetricSettings(jsonWriter, metric1, metric2);
+//    this.transformMetrics(jsonWriter, metrics);
+//    jsonWriter.endObject();
+//    jsonWriter.close();
+//
+//    this.session.commit();
   }
 
   private void transformMetricSettings(JsonWriter jsonWriter, Integer metric1, Integer metric2) {

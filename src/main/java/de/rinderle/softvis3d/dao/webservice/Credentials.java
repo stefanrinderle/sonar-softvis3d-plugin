@@ -17,19 +17,39 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-goog.provide('ThreeViewer.BackendService');
+package de.rinderle.softvis3d.dao.webservice;
 
-ThreeViewer.BackendService = function ($http) {
-  this.http = $http;
-};
+public class Credentials {
 
-ThreeViewer.BackendService.prototype.getVisualization = function (snapshotId, footprintMetricId, heightMetricId, viewType) {
-  return this.http.get("../../api/softVis3D/getVisualization?snapshotId=" + snapshotId
-  + "&footprintMetricId=" + footprintMetricId
-  + "&heightMetricId=" + heightMetricId
-  + "&viewType=" + viewType);
-};
+    private static String username = null;
+    private static String password = null;
 
-ThreeViewer.BackendService.prototype.getConfig = function (snapshotId, resourceId) {
-  return this.http.get("../../api/softVis3D/getConfig?snapshotId=" + snapshotId + "&resourceId=" + resourceId);
-};
+    /**
+     * @return the username
+     */
+    public static String getUsername() {
+        return username;
+    }
+
+    /**
+     * @param username the username to set
+     */
+    public static void setUsername(String username) {
+        Credentials.username = username;
+    }
+
+    /**
+     * @return the password
+     */
+    public static String getPassword() {
+        return password;
+    }
+
+    /**
+     * @param password the password to set
+     */
+    public static void setPassword(String password) {
+        Credentials.password = password;
+    }
+
+}

@@ -17,19 +17,17 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-goog.provide('ThreeViewer.BackendService');
+package de.rinderle.softvis3d.dao.entity;
 
-ThreeViewer.BackendService = function ($http) {
-  this.http = $http;
-};
+import java.io.IOException;
 
-ThreeViewer.BackendService.prototype.getVisualization = function (snapshotId, footprintMetricId, heightMetricId, viewType) {
-  return this.http.get("../../api/softVis3D/getVisualization?snapshotId=" + snapshotId
-  + "&footprintMetricId=" + footprintMetricId
-  + "&heightMetricId=" + heightMetricId
-  + "&viewType=" + viewType);
-};
+public class ApiException extends Exception {
 
-ThreeViewer.BackendService.prototype.getConfig = function (snapshotId, resourceId) {
-  return this.http.get("../../api/softVis3D/getConfig?snapshotId=" + snapshotId + "&resourceId=" + resourceId);
-};
+  public ApiException(String msg) {
+    super(msg);
+  }
+
+  public ApiException(IOException e) {
+    super(e.getMessage());
+  }
+}

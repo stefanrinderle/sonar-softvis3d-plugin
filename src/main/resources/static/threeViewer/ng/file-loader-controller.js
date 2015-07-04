@@ -74,7 +74,7 @@ ThreeViewer.FileLoaderController.prototype.init = function () {
   var me = this;
 
   this.waitFor(500, 0, function () {
-    me.BackendService.getConfig(ThreeViewer.SNAPSHOT_ID).then(function (response) {
+    me.BackendService.getConfig(ThreeViewer.SNAPSHOT_ID, ThreeViewer.RESOURCE_ID).then(function (response) {
       me.settings = response.data.settings;
       me.availableMetrics = response.data.metricsForSnapshot;
       me.hasDependencies = response.data.hasDependencies;
