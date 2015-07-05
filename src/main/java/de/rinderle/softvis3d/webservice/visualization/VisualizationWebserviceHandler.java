@@ -23,6 +23,7 @@ import com.google.inject.Inject;
 import de.rinderle.softvis3d.SoftVis3DPlugin;
 import de.rinderle.softvis3d.VisualizationProcessor;
 import de.rinderle.softvis3d.cache.LayoutCacheService;
+import de.rinderle.softvis3d.dao.entity.ProjectWrapper;
 import de.rinderle.softvis3d.domain.LayoutViewType;
 import de.rinderle.softvis3d.domain.SnapshotStorageKey;
 import de.rinderle.softvis3d.domain.SnapshotTreeResult;
@@ -50,6 +51,8 @@ public class VisualizationWebserviceHandler extends AbstractWebserviceHandler im
   private DatabaseSession session;
 
   @Inject
+  private ProjectWrapper projectWrapper;
+  @Inject
   private VisualizationProcessor visualizationProcessor;
   @Inject
   private VisualizationJsonWriter visualizationJsonWriter;
@@ -65,12 +68,13 @@ public class VisualizationWebserviceHandler extends AbstractWebserviceHandler im
   public void handleRequest(final Request request, final Response response) throws Exception {
     this.session.start();
 
-    final Integer id = Integer.valueOf(request.param("snapshotId"));
-    final Integer footprintMetricId = Integer.valueOf(request.param("footprintMetricId"));
-    final Integer heightMetricId = Integer.valueOf(request.param("heightMetricId"));
+//    final Integer id = Integer.valueOf(request.param("snapshotId"));
+    final Integer resourceId = Integer.valueOf(request.param("resourceId"));
+    final String footprintMetricKey = request.param("footprintMetricKey");
+    final String heightMetricKey = request.param("heightMetricKey");
 
     final LayoutViewType type = LayoutViewType.valueOfRequest(request.param("viewType"));
-    final VisualizationRequest requestDTO = new VisualizationRequest(id, type, footprintMetricId, heightMetricId);
+    final VisualizationRequest requestDTO = new VisualizationRequest(resourceId, type, footprintMetricKey, heightMetricKey);
 
     LOGGER.info("VisualizationWebserviceHandler " + requestDTO.toString());
 
@@ -84,7 +88,7 @@ public class VisualizationWebserviceHandler extends AbstractWebserviceHandler im
       visualizationResult = layoutCacheService.getLayoutResult(key);
     } else {
       LOGGER.info("Create layout for " + key.toString());
-      visualizationResult = createLayout(id, requestDTO, snapshotTreeResult);
+      visualizationResult = createLayout(resourceId, requestDTO, snapshotTreeResult);
       if (SoftVis3DPlugin.CACHE_ENABLED) {
         layoutCacheService.save(key, visualizationResult);
       }

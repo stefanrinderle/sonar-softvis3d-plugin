@@ -25,12 +25,15 @@ public class UrlPath {
   public static final String RESOURCES = "/api/resources?resource=";
   public static final String ISSUES = "/api/issues/search?resource=";
   public static final String SOURCES = "/api/sources?resource=";
+  public static final String METRIC = "/api/metrics";
 
   // Second level
   public static final String DEPTH_0 = "&depth=0";
   public static final String DEPTH_1 = "&depth=1";
 
   public static final String PROJECT_SCOPE = "&scopes=PRJ";
+  public static final String SLASH = "/";
+
 
   public static final String CATEGORIES_VIOLATIONS = "&metrics=" + MetricKeys.VIOLATIONS + "&filter_rules_cats=false";
   public static final String CATEGORIES_VIOLATIONS_DENSITY = "&metrics=" + MetricKeys.VIOLATIONS_DENSITY
@@ -53,5 +56,7 @@ public class UrlPath {
 
   public static final String JSON_SOURCE = "&format=json";
   public static final String LIMIT10 = "&limit=5";
+
+
 
 }

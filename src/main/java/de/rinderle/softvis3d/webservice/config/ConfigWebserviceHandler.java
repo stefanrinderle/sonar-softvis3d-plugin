@@ -20,14 +20,16 @@
 package de.rinderle.softvis3d.webservice.config;
 
 import com.google.inject.Inject;
+import de.rinderle.softvis3d.dao.entity.Metric;
+import de.rinderle.softvis3d.dao.entity.MetricAdapter;
 import de.rinderle.softvis3d.dao.entity.ProjectWrapper;
 import de.rinderle.softvis3d.dao.webservice.SonarAccess;
-import de.rinderle.softvis3d.domain.Metric;
+import de.rinderle.softvis3d.domain.tree.RootTreeNode;
+import de.rinderle.softvis3d.preprocessing.PreProcessor;
 import de.rinderle.softvis3d.webservice.AbstractWebserviceHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.config.Settings;
-import org.sonar.api.database.DatabaseSession;
 import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.RequestHandler;
 import org.sonar.api.server.ws.Response;
@@ -39,79 +41,45 @@ public class ConfigWebserviceHandler extends AbstractWebserviceHandler implement
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ConfigWebserviceHandler.class);
 
-//  @Inject
-//  private DaoService daoService;
+  @Inject
+  private ConfigJsonWriter configJsonWriter;
 
   @Inject
-  private ProjectWrapper projectWrapper;
+  private MetricAdapter metricAdapter;
+//  @Inject
+//  private ProjectWrapper projectWrapper;
 
   private Settings settings;
-  private DatabaseSession session;
 
   public void setSettings(final Settings settings) {
     this.settings = settings;
-  }
-
-  public void setDatabaseSession(final DatabaseSession session) {
-    this.session = session;
   }
 
   @Override
   public void handleRequest(final Request request, final Response response) throws Exception {
     final Integer id = Integer.valueOf(request.param("snapshotId"));
     final Integer resourceId = Integer.valueOf(request.param("resourceId"));
-    LOGGER.info("ConfigWebserviceHandler " + id);
+    LOGGER.info("ConfigWebserviceHandler snapshot: " + id + " resource " + resourceId);
 
-    String url = "http://localhost";
-    SonarAccess sonarAccess = new SonarAccess(url, "admin", "admin");
+//    String url = "http://localhost";
+//    SonarAccess sonarAccess = new SonarAccess(url, "admin", "admin");
+//    RootTreeNode result = projectWrapper.initializeProject(resourceId);
+//
+//    LOGGER.info(result.toString());
+//    LOGGER.info(result.getAllChildrenNodesSize() + "");
+//    LOGGER.info("XXXXXXXXXXXXXX");
 
-    projectWrapper.initializeProject(resourceId);
+    final String metric1Key = this.settings.getString("metric1");
+    final String metric2Key = this.settings.getString("metric2");
 
-//
-//    this.session.start();
-//
-//    final Integer id = Integer.valueOf(request.param("snapshotId"));
-//
-//    LOGGER.info("ConfigWebserviceHandler " + id);
-//
-//    final Integer metric1 = this.daoService.getMetric1FromSettings(this.settings);
-//    final Integer metric2 = this.daoService.getMetric2FromSettings(this.settings);
-//
-//    final List<Metric> metrics = this.daoService.getDefinedMetricsForSnapshot(id);
-//
-//    final boolean hasDependencies = this.daoService.hasDependencies(id);
-//
-//    final JsonWriter jsonWriter = response.newJsonWriter();
-//    jsonWriter.beginObject();
-//    jsonWriter.prop("hasDependencies", hasDependencies);
-//    this.transformMetricSettings(jsonWriter, metric1, metric2);
-//    this.transformMetrics(jsonWriter, metrics);
-//    jsonWriter.endObject();
-//    jsonWriter.close();
-//
-//    this.session.commit();
+    final List<Metric> metrics = metricAdapter.getAllMetrics();
+
+    final boolean hasDependencies = false;//this.daoService.hasDependencies(id);
+
+    final JsonWriter jsonWriter = response.newJsonWriter();
+    configJsonWriter.transform(jsonWriter, metric1Key, metric2Key, metrics, hasDependencies);
   }
 
-  private void transformMetricSettings(JsonWriter jsonWriter, Integer metric1, Integer metric2) {
-    jsonWriter.name("settings");
-    jsonWriter.beginObject();
-    jsonWriter.prop("metric1", metric1);
-    jsonWriter.prop("metric2", metric2);
-    jsonWriter.endObject();
-  }
 
-  private void transformMetrics(JsonWriter jsonWriter, List<Metric> metrics) {
-    jsonWriter.name("metricsForSnapshot");
-    jsonWriter.beginArray();
-
-    for (Metric metric : metrics) {
-      jsonWriter.beginObject();
-      jsonWriter.prop("id", metric.getId());
-      jsonWriter.prop("name", metric.getDescription());
-      jsonWriter.endObject();
-    }
-
-    jsonWriter.endArray();
-  }
 
 }

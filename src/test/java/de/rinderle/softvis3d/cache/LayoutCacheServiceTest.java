@@ -61,7 +61,7 @@ public class LayoutCacheServiceTest {
   }
 
   private SnapshotStorageKey getSnapshotStorageKey(final int id) {
-    VisualizationRequest requestDto = new VisualizationRequest(id, LayoutViewType.CITY, 1, 1);
+    VisualizationRequest requestDto = new VisualizationRequest(id, LayoutViewType.CITY, "ncloc", "lines");
     return new SnapshotStorageKey(requestDto);
   }
 }

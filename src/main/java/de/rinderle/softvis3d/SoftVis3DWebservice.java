@@ -45,7 +45,6 @@ public class SoftVis3DWebservice implements WebService {
 
     this.configHandler = softVis3DInjector.getInstance(ConfigWebserviceHandler.class);
     this.configHandler.setSettings(settings);
-    this.configHandler.setDatabaseSession(session);
     this.visualizationHandler = softVis3DInjector.getInstance(VisualizationWebserviceHandler.class);
     this.visualizationHandler.setSettings(settings);
     this.visualizationHandler.setDatabaseSession(session);
@@ -62,9 +61,11 @@ public class SoftVis3DWebservice implements WebService {
 
     // create the URL /api/softVis3D/getVisualization
     controller.createAction("getVisualization").setDescription("Get getVisualization structure")
-      .setHandler(this.visualizationHandler).createParam("snapshotId", "Snapshot id")
-      .createParam("footprintMetricId", "Footprint metric id")
-      .createParam("heightMetricId", "Height metric id").createParam("viewType", "Current view type");
+      .setHandler(this.visualizationHandler)
+      .createParam("snapshotId", "Snapshot id")
+      .createParam("resourceId", "Resource id")
+      .createParam("footprintMetricKey", "Footprint metric key")
+      .createParam("heightMetricKey", "Height metric key").createParam("viewType", "Current view type");
 
     // important to apply changes
     controller.done();

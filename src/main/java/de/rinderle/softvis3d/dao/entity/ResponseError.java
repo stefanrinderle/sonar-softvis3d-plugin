@@ -17,20 +17,32 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-goog.provide('ThreeViewer.BackendService');
+package de.rinderle.softvis3d.dao.entity;
 
-ThreeViewer.BackendService = function ($http) {
-  this.http = $http;
-};
+/**
+ * Representation of an error response of the sonar api.
+ *
+ * {"err_code":404,"err_msg":"Resource [18725] not found"}
+ *
+ */
+public class ResponseError {
 
-ThreeViewer.BackendService.prototype.getVisualization = function (snapshotId, resourceId, footprintMetricId, heightMetricId, viewType) {
-  return this.http.get("../../api/softVis3D/getVisualization?snapshotId=" + snapshotId
-      + "&resourceId=" + resourceId
-      + "&footprintMetricId=" + footprintMetricId
-      + "&heightMetricId=" + heightMetricId
-      + "&viewType=" + viewType);
-};
+  public String err_code;
+  public String err_msg;
 
-ThreeViewer.BackendService.prototype.getConfig = function (snapshotId, resourceId) {
-  return this.http.get("../../api/softVis3D/getConfig?snapshotId=" + snapshotId + "&resourceId=" + resourceId);
-};
+  public String getErr_code() {
+    return err_code;
+  }
+
+  public String getErr_msg() {
+    return err_msg;
+  }
+
+  public void setErr_code(String err_code) {
+    this.err_code = err_code;
+  }
+
+  public void setErr_msg(String err_msg) {
+    this.err_msg = err_msg;
+  }
+}

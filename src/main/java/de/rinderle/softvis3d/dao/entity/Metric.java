@@ -17,23 +17,47 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package de.rinderle.softvis3d.domain;
+package de.rinderle.softvis3d.dao.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Metric {
 
-  private final Integer id;
-  private final String description;
+  private String key;
+  private String name;
+  private String val_type;
+  private boolean hidden;
 
-  public Metric(Integer id, String description) {
-    this.id = id;
-    this.description = description;
+  public void setKey(String key) {
+    this.key = key;
   }
 
-  public Integer getId() {
-    return id;
+  public void setName(String name) {
+    this.name = name;
   }
 
-  public String getDescription() {
-    return description;
+  public void setVal_type(String val_type) {
+    this.val_type = val_type;
+  }
+
+  public void setHidden(boolean hidden) {
+    this.hidden = hidden;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getVal_type() {
+    return val_type;
+  }
+
+  public boolean isHidden() {
+    return hidden;
   }
 }

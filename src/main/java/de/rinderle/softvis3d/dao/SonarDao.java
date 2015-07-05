@@ -21,7 +21,6 @@ package de.rinderle.softvis3d.dao;
 
 import com.google.inject.Singleton;
 import de.rinderle.softvis3d.dao.dto.MetricResultDTO;
-import de.rinderle.softvis3d.domain.Metric;
 import de.rinderle.softvis3d.domain.MinMaxValue;
 import de.rinderle.softvis3d.domain.sonar.ModuleInfo;
 import org.slf4j.Logger;
@@ -53,24 +52,8 @@ public class SonarDao {
   }
 
   @SuppressWarnings("unchecked")
-  public List<Metric> getDistinctMetricsBySnapshotId(final Integer snapshotId) {
-    // TODO: check if the metric is defined for that snapshot id.
-
-    List<Metric> metrics = new ArrayList<Metric>();
-
-    List<org.sonar.api.measures.Metric> metricsTest = session.getResults(org.sonar.api.measures.Metric.class);
-    for (org.sonar.api.measures.Metric metrict : metricsTest) {
-      if (metrict.isNumericType() && !metrict.isHidden() && metrict.getEnabled()) {
-        metrics.add(new Metric(metrict.getId(), metrict.getName()));
-      }
-    }
-
-    return metrics;
-  }
-
-  @SuppressWarnings("unchecked")
   public List<ModuleInfo> getDirectModuleChildrenIds(final Integer snapshotId) {
-    final List<ModuleInfo> result = new ArrayList<ModuleInfo>();
+    final List<ModuleInfo> result = new ArrayList<>();
 
     final List<Snapshot> snapshots = session.getResults(Snapshot.class,
       "parentId", snapshotId, "qualifier", Qualifiers.MODULE);
@@ -92,26 +75,27 @@ public class SonarDao {
     return result.getId();
   }
 
-  public MinMaxValue getMinMaxMetricValuesByRootSnapshotId(int rootSnapshotId, int metricId) {
-    final StringBuilder sb = new StringBuilder();
-
-    sb.append("SELECT MIN(m.value), MAX(m.value) ");
-    sb.append(" FROM ")
-      .append(MeasureModel.class.getSimpleName())
-      .append(" m, ")
-      .append(Snapshot.class.getSimpleName())
-      .append(" s WHERE m.snapshotId=s.id ")
-      .append("AND (s.path LIKE :idRoot OR s.path LIKE :idModule) AND ")
-      .append("m.metricId =:metric_id AND s.scope = 'FIL'");
-
-    Query jpaQuery = session.createQuery(sb.toString());
-
-    jpaQuery.setParameter("idRoot", rootSnapshotId + ".%");
-    jpaQuery.setParameter("idModule", "%." + rootSnapshotId + ".%");
-    jpaQuery.setParameter("metric_id", metricId);
-
-    final Object[] result = (Object[]) jpaQuery.getSingleResult();
-    return new MinMaxValue((Double) result[0], (Double) result[1]);
+  public MinMaxValue getMinMaxMetricValuesByRootSnapshotId(int rootSnapshotId, String metricKey) {
+//    final StringBuilder sb = new StringBuilder();
+//
+//    sb.append("SELECT MIN(m.value), MAX(m.value) ");
+//    sb.append(" FROM ")
+//      .append(MeasureModel.class.getSimpleName())
+//      .append(" m, ")
+//      .append(Snapshot.class.getSimpleName())
+//      .append(" s WHERE m.snapshotId=s.id ")
+//      .append("AND (s.path LIKE :idRoot OR s.path LIKE :idModule) AND ")
+//      .append("m.metricId =:metric_id AND s.scope = 'FIL'");
+//
+//    Query jpaQuery = session.createQuery(sb.toString());
+//
+//    jpaQuery.setParameter("idRoot", rootSnapshotId + ".%");
+//    jpaQuery.setParameter("idModule", "%." + rootSnapshotId + ".%");
+//    jpaQuery.setParameter("metric_id", metricId);
+//
+//    final Object[] result = (Object[]) jpaQuery.getSingleResult();
+//    return new MinMaxValue((Double) result[0], (Double) result[1]);
+    return new MinMaxValue(0.0, 100.0);
   }
 
   public List<MetricResultDTO<Integer>> getAllSnapshotIdsWithRescourceId(final Integer rootSnapshotId) {

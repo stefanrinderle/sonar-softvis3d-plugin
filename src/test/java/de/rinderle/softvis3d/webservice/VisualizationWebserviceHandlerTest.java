@@ -21,6 +21,7 @@ package de.rinderle.softvis3d.webservice;
 
 import de.rinderle.softvis3d.VisualizationProcessor;
 import de.rinderle.softvis3d.cache.LayoutCacheService;
+import de.rinderle.softvis3d.dao.entity.ApiException;
 import de.rinderle.softvis3d.domain.LayoutViewType;
 import de.rinderle.softvis3d.domain.SnapshotStorageKey;
 import de.rinderle.softvis3d.domain.SnapshotTreeResult;
@@ -62,8 +63,8 @@ public class VisualizationWebserviceHandlerTest {
   private final JsonWriter jsonWriter = JsonWriter.of(this.stringWriter);
 
   private final Integer snapshotId = 123;
-  private final Integer footprintMetricId = 1;
-  private final Integer heightMetricId = 21;
+  private final String footprintMetricKey = "ncloc";
+  private final String heightMetricKey = "lines";
   private final String viewType = "city";
 
   @InjectMocks
@@ -95,7 +96,7 @@ public class VisualizationWebserviceHandlerTest {
     final Response response = this.createResponse();
 
     final VisualizationRequest requestDTO = new VisualizationRequest(
-      this.snapshotId, LayoutViewType.CITY, this.footprintMetricId, this.heightMetricId);
+      this.snapshotId, LayoutViewType.CITY, this.footprintMetricKey, this.heightMetricKey);
 
     final SnapshotTreeResult treeResult = mockPreProcessing(requestDTO);
 
@@ -118,7 +119,7 @@ public class VisualizationWebserviceHandlerTest {
     return visualizationResult;
   }
 
-  private SnapshotTreeResult mockPreProcessing(VisualizationRequest requestDTO) {
+  private SnapshotTreeResult mockPreProcessing(VisualizationRequest requestDTO) throws ApiException {
     final SnapshotStorageKey key = new SnapshotStorageKey(requestDTO);
     final RootTreeNode rootTreeNode = new RootTreeNode(1);
     final SnapshotTreeResult treeResult = new SnapshotTreeResult(key, rootTreeNode);
@@ -144,10 +145,10 @@ public class VisualizationWebserviceHandlerTest {
       public String param(final String key) {
         if ("snapshotId".equals(key)) {
           return VisualizationWebserviceHandlerTest.this.snapshotId.toString();
-        } else if ("footprintMetricId".equals(key)) {
-          return VisualizationWebserviceHandlerTest.this.footprintMetricId.toString();
+        } else if ("footprintMetricKey".equals(key)) {
+          return VisualizationWebserviceHandlerTest.this.footprintMetricKey.toString();
         } else if ("heightMetricId".equals(key)) {
-          return VisualizationWebserviceHandlerTest.this.heightMetricId.toString();
+          return VisualizationWebserviceHandlerTest.this.heightMetricKey.toString();
         } else if ("viewType".equals(key)) {
           return VisualizationWebserviceHandlerTest.this.viewType;
         } else {

@@ -58,7 +58,7 @@ public class BottomUpLayoutBeanTest {
   @Test
   public void testAccept() throws Exception {
     final int snapshotId = 1;
-    final VisualizationRequest requestDTO = new VisualizationRequest(snapshotId, LayoutViewType.CITY, 1, 1);
+    final VisualizationRequest requestDTO = new VisualizationRequest(snapshotId, LayoutViewType.CITY, "ncloc", "lines");
     final SnapshotStorageKey storageKey = new SnapshotStorageKey(requestDTO);
 
     final RootTreeNode tree = new RootTreeNode(snapshotId);

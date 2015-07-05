@@ -23,6 +23,7 @@ import de.rinderle.softvis3d.dao.entity.ApiException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -68,7 +69,7 @@ public class SonarAccess {
     initialize(sonarUrl, username, password);
   }
 
-  public String getUrlAsResultString(String urlPath) throws IOException {
+  public String getUrlAsResultString(String urlPath) throws ApiException {
     HttpClient httpclient = HttpClientBuilder.create().build();
     try {
 
@@ -85,6 +86,8 @@ public class SonarAccess {
 
       return EntityUtils.toString(entity);
 
+    } catch (IOException e) {
+      throw new ApiException(e);
     } finally {
       // When HttpClient instance is no longer needed,
       // shut down the connection manager to ensure

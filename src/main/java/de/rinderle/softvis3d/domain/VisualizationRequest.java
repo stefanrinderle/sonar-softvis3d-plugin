@@ -28,16 +28,16 @@ public class VisualizationRequest {
 
   private final LayoutViewType viewType;
 
-  private final int footprintMetricId;
-  private final int heightMetricId;
+  private final String footprintMetricKey;
+  private final String heightMetricKey;
 
-  public VisualizationRequest(int rootSnapshotId, LayoutViewType viewType, int footprintMetricId, int heightMetricId) {
+  public VisualizationRequest(int rootSnapshotId, LayoutViewType viewType, String footprintMetricKey, String heightMetricKey) {
     this.rootSnapshotId = rootSnapshotId;
 
     this.viewType = viewType;
 
-    this.footprintMetricId = footprintMetricId;
-    this.heightMetricId = heightMetricId;
+    this.footprintMetricKey = footprintMetricKey;
+    this.heightMetricKey = heightMetricKey;
   }
 
   public int getRootSnapshotId() {
@@ -48,18 +48,18 @@ public class VisualizationRequest {
     return this.viewType;
   }
 
-  public int getFootprintMetricId() {
-    return this.footprintMetricId;
+  public String getFootprintMetricId() {
+    return this.footprintMetricKey;
   }
 
-  public int getHeightMetricId() {
-    return this.heightMetricId;
+  public String getHeightMetricId() {
+    return this.heightMetricKey;
   }
 
   @Override
   public String toString() {
     return "VisualizationRequest{" + "rootSnapshotId=" + rootSnapshotId + ", viewType=" + viewType
-      + ", footprintMetricId=" + footprintMetricId + ", heightMetricId=" + heightMetricId + '}';
+      + ", footprintMetricId=" + footprintMetricKey + ", heightMetricId=" + heightMetricKey + '}';
   }
 
   @Override
@@ -76,8 +76,8 @@ public class VisualizationRequest {
 
     return new EqualsBuilder()
       .append(rootSnapshotId, that.rootSnapshotId)
-      .append(footprintMetricId, that.footprintMetricId)
-      .append(heightMetricId, that.heightMetricId)
+      .append(footprintMetricKey, that.footprintMetricKey)
+      .append(heightMetricKey, that.heightMetricKey)
       .append(viewType, that.viewType)
       .isEquals();
   }
@@ -87,8 +87,8 @@ public class VisualizationRequest {
     return new HashCodeBuilder(17, 37)
       .append(rootSnapshotId)
       .append(viewType)
-      .append(footprintMetricId)
-      .append(heightMetricId)
+      .append(footprintMetricKey)
+      .append(heightMetricKey)
       .toHashCode();
   }
 }

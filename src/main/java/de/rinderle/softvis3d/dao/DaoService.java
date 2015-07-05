@@ -59,21 +59,9 @@ public class DaoService {
     return this.sonarDao.getMetricIdByKey(settings.getString("metric2"));
   }
 
-  /**
-   * Request all metrics which are set on the file level (Scope) for the requested root snapshot.
-   *
-   * @param snapshotId
-   *            Root snapshot ID
-   * @return defined metrics on the file level scope
-   */
-  public List<de.rinderle.softvis3d.domain.Metric> getDefinedMetricsForSnapshot(final Integer snapshotId) {
-    LOGGER.debug("getDefinedMetricsForSnapshot " + snapshotId);
-    return this.sonarDao.getDistinctMetricsBySnapshotId(snapshotId);
-  }
-
-  public MinMaxValue getMinMaxMetricValuesByRootSnapshotId(int rootSnapshotId, int metricId) {
+  public MinMaxValue getMinMaxMetricValuesByRootSnapshotId(int rootSnapshotId, String metricKey) {
     LOGGER.debug("getMinMaxMetricValuesByRootSnapshotId " + rootSnapshotId);
-    return this.sonarDao.getMinMaxMetricValuesByRootSnapshotId(rootSnapshotId, metricId);
+    return this.sonarDao.getMinMaxMetricValuesByRootSnapshotId(rootSnapshotId, metricKey);
   }
 
   public boolean hasDependencies(Integer snapshotId) {
@@ -137,8 +125,8 @@ public class DaoService {
       final Integer snapshotId = snapshot.getId();
       SonarSnapshotBuilder builder = new SonarSnapshotBuilder(snapshotId);
       builder.withPath(sonarDao.getResourcePath(snapshot.getValue()));
-      builder.withFootprintMeasure(sonarDao.getMetricDouble(requestDTO.getFootprintMetricId(), snapshotId));
-      builder.withHeightMeasure(sonarDao.getMetricDouble(requestDTO.getHeightMetricId(), snapshotId));
+//      builder.withFootprintMeasure(sonarDao.getMetricDouble(requestDTO.getFootprintMetricId(), snapshotId));
+//      builder.withHeightMeasure(sonarDao.getMetricDouble(requestDTO.getHeightMetricId(), snapshotId));
 
       // TODO: do something with this information here or delete.
       // final String authors = this.sonarDao.getMetricText(authorMetricId, snapshotId);

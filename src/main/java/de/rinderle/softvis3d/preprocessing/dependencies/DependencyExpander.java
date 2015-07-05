@@ -72,7 +72,7 @@ public class DependencyExpander {
       LOGGER.warn("That's on dependency type dir. Analyse and fix.");
       return DependencyType.DIR;
     } else {
-      final boolean hasSameParent = from.getParent().getId().equals(to.getParent().getId());
+      final boolean hasSameParent = from.getParent().getId() == to.getParent().getId();
 
       if (hasSameParent) {
         return DependencyType.INPUT_FLAT;
@@ -86,7 +86,7 @@ public class DependencyExpander {
     TreeNode sourceResult = source;
     TreeNode destinationResult = dest;
 
-    while (!sourceResult.getParent().getId().equals(destinationResult.getParent().getId())) {
+    while (!(sourceResult.getParent().getId() == destinationResult.getParent().getId())) {
       if (sourceResult.getDepth() > destinationResult.getDepth()) {
         this.handleNewDepEdge(sourceResult, dependencyId, true);
         sourceResult = sourceResult.getParent();
@@ -97,7 +97,7 @@ public class DependencyExpander {
     }
 
     // compute till both have the same parent
-    while (!sourceResult.getParent().getId().equals(destinationResult.getParent().getId())) {
+    while (!(sourceResult.getParent().getId() == destinationResult.getParent().getId())) {
       if (sourceResult.getDepth() > destinationResult.getDepth()) {
         this.handleNewDepEdge(sourceResult, dependencyId, true);
         sourceResult = sourceResult.getParent();

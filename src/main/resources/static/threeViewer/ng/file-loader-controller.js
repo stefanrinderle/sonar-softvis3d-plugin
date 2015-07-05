@@ -123,10 +123,10 @@ ThreeViewer.FileLoaderController.prototype.showTab = function (tab) {
 ThreeViewer.FileLoaderController.prototype.submitCityForm = function () {
   var cityType = "city";
 
-  var linesId = this.getMetricIdForName("Lines");
-  var complexityId = this.getMetricIdForName("Complexity");
-  var issuesId = this.getMetricIdForName("Issues");
-  var functionsId = this.getMetricIdForName("Functions");
+  var linesId = this.getMetricKeyForName("lines");
+  var complexityId = this.getMetricKeyForName("complexity");
+  var issuesId = this.getMetricKeyForName("violations");
+  var functionsId = this.getMetricKeyForName("functions");
 
   if (this.cityInnerState === "complexity") {
     this.loadVisualisation(complexityId, linesId, cityType);
@@ -144,8 +144,8 @@ ThreeViewer.FileLoaderController.prototype.submitCityForm = function () {
  *
  */
 ThreeViewer.FileLoaderController.prototype.loadDependencyView = function () {
-  var linesId = this.getMetricIdForName("Lines");
-  var complexityId = this.getMetricIdForName("Complexity");
+  var linesId = this.getMetricKeyForName("lines");
+  var complexityId = this.getMetricKeyForName("complexity");
 
   this.loadVisualisation(complexityId, linesId, "dependency");
 };
@@ -163,7 +163,7 @@ ThreeViewer.FileLoaderController.prototype.loadVisualisation = function (metric1
 
   this.infoInnerState = "loading";
   this.showTab("info");
-  this.BackendService.getVisualization(ThreeViewer.SNAPSHOT_ID, metric1, metric2, viewType).then(function (response) {
+  this.BackendService.getVisualization(ThreeViewer.SNAPSHOT_ID, ThreeViewer.RESOURCE_ID, metric1, metric2, viewType).then(function (response) {
     var treeResult = response.data.resultObject[0].treeResult;
     var visualizationResult = response.data.resultObject[1].visualizationResult;
 
@@ -171,7 +171,7 @@ ThreeViewer.FileLoaderController.prototype.loadVisualisation = function (metric1
     me.TreeService.setTree(treeResult);
 
     var eventObject = {};
-    eventObject.softVis3dId = ThreeViewer.SNAPSHOT_ID;
+    eventObject.softVis3dId = ThreeViewer.RESOURCE_ID;
     eventObject.metric1Name = me.getNameForMetricId(metric1);
     eventObject.metric2Name = me.getNameForMetricId(metric2);
 
@@ -190,7 +190,7 @@ ThreeViewer.FileLoaderController.prototype.loadVisualisation = function (metric1
 
 ThreeViewer.FileLoaderController.prototype.getNameForMetricId = function (metricId) {
   for (var index = 0; index < this.availableMetrics.length; index++) {
-    if (this.availableMetrics[index].id === metricId) {
+    if (this.availableMetrics[index].key === metricId) {
       return this.availableMetrics[index].name;
     }
   }
@@ -198,10 +198,10 @@ ThreeViewer.FileLoaderController.prototype.getNameForMetricId = function (metric
   return "no name found";
 };
 
-ThreeViewer.FileLoaderController.prototype.getMetricIdForName = function (nameToSearch) {
+ThreeViewer.FileLoaderController.prototype.getMetricKeyForName = function (nameToSearch) {
   for (var index = 0; index < this.availableMetrics.length; index++) {
     if (this.availableMetrics[index].name === nameToSearch) {
-      return this.availableMetrics[index].id;
+      return this.availableMetrics[index].key;
     }
   }
 

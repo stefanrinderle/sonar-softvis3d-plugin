@@ -20,13 +20,14 @@
 package de.rinderle.softvis3d.dao.entity;
 
 import com.google.inject.Inject;
-import org.dom4j.DocumentException;
+import de.rinderle.softvis3d.domain.sonar.SonarSnapshot;
+import de.rinderle.softvis3d.domain.sonar.SonarSnapshotBuilder;
+import de.rinderle.softvis3d.domain.tree.RootTreeNode;
+import de.rinderle.softvis3d.preprocessing.tree.PathWalker;
+import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.JAXBException;
-
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -39,28 +40,91 @@ public class ProjectWrapper {
   @Inject
   private ResourceAdapter resourceAdapter;
 
-  public void initializeProject(final Integer id) throws IOException,
-    ApiException, DocumentException, JAXBException {
+  public RootTreeNode initializeProject(final long id) throws ApiException {
+    List<Resource> allFiles = initProjectStructure(id);
 
-    initProjectStructure(id);
+    final PathWalker pathWalker = new PathWalker((int) id);
+
+    for (Resource file : allFiles) {
+      SonarSnapshot moduleElement = new SonarSnapshotBuilder((int) file.getId())
+              .withPath(file.getName())
+              .withFootprintMeasure(50.0)
+              .withHeightMeasure(50.0)
+              .build();
+
+      pathWalker.addPath(moduleElement);
+    }
+
+    return pathWalker.getTree();
   }
 
-  void initProjectStructure(final Integer id) throws ApiException {
+  List<Resource> initProjectStructure(final long id) throws ApiException {
     Resource resource = resourceAdapter.getResourceById(id);
 
+    List<Resource> result = new ArrayList<>();
     List<Resource> modules = resourceAdapter.getModules(resource.getId());
 
     if (modules.isEmpty()) {
-      initModule(resource);
+      result.addAll(initModule(resource, false));
     } else {
       for (Resource module : modules) {
-        initModule(module);
+        result.addAll(initModule(module, true));
       }
     }
+
+    return result;
   }
 
-  private void initModule(Resource resource) {
-    LOGGER.info("init module " + resource.getId());
+  private List<Resource> initModule(Resource module, boolean prefix) throws ApiException {
+    LOGGER.info("init module " + module.getId());
+
+    List<Resource> result = new ArrayList<>();
+
+    List<Resource> directories = resourceAdapter.getDirectories(module.getId());
+
+    for (Resource directory : directories) {
+      // check really for directories, otherwise write big info message
+      if (!directory.getScope().equals("DIR")) {
+        LOGGER.info("--------------------------NOT A DIR ------- " + directory.getId());
+      }
+
+      result.addAll(initDirectory(directory));
+
+    }
+
+    for (Resource file : result) {
+      // check really for directories, otherwise write big info message
+      if (!file.getScope().equals("FIL")) {
+        LOGGER.info("--------------------------NOT A FILE ------- " + file.getId());
+      } else {
+        if (prefix) {
+          LOGGER.info("---Would set prefix");
+//           TODO: get a short good key
+          file.setName(module.getKey() + "/" + file.getName());
+        }
+      }
+    }
+
+
+    return result;
+  }
+
+  private List<Resource> initDirectory(Resource directory) throws ApiException {
+    List<Resource> files = resourceAdapter.getFiles(directory.getId());
+
+    for (Resource file : files) {
+      // check really for directories, otherwise write big info message
+      if (!file.getScope().equals("FIL")) {
+        LOGGER.info("--------------------------NOT A FILE ------- " + file.getId());
+      } else {
+        if (!directory.getName().equals("/")) {
+          file.setName(directory.getName() + "/" + file.getName());
+        }
+      }
+    }
+
+    return files;
+
   }
 
 }

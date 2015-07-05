@@ -31,23 +31,20 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
-public class ResourceAdapter {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ProjectWrapper.class);
+public class MetricAdapter {
 
-  private ObjectMapper mapper = new ObjectMapper(); // can reuse, share globally
+  private static final Logger LOGGER = LoggerFactory.getLogger(MetricAdapter.class);
 
   @Inject
   private SonarAccess sonarAccess;
 
-  public Resource getResourceById(final long id) throws ApiException {
-    LOGGER.info("Retrieving project info for " + id);
-
+  public Metric getMetricById(final String key) throws ApiException {
+    LOGGER.info("Retrieving metric info for " + key);
     try {
-      String input = sonarAccess.getUrlAsResultString(UrlPath.RESOURCES + id + UrlPath.DEPTH_0
-        + UrlPath.JSON_SOURCE);
+      String input = sonarAccess.getUrlAsResultString(UrlPath.METRIC + UrlPath.SLASH + key);
 
-      List<Resource> result = getResources(input);
+      List<Metric> result = getMetrics(input);
 
       return result.get(0);
 
@@ -56,39 +53,20 @@ public class ResourceAdapter {
     }
   }
 
-  public List<Resource> getModules(long id) throws ApiException {
+  public List<Metric> getAllMetrics() throws ApiException {
     try {
-      String input = sonarAccess.getUrlAsResultString(UrlPath.RESOURCES + id + UrlPath.DEPTH_1
-        + UrlPath.JSON_SOURCE + UrlPath.PROJECT_SCOPE);
-      return getResources(input);
+      String input = sonarAccess.getUrlAsResultString(UrlPath.METRIC);
+      return getMetrics(input);
     } catch (IOException e) {
       throw new ApiException(e);
     }
   }
 
-  public List<Resource> getDirectories(long id) throws ApiException {
-    return getChildren(id);
-  }
-
-  public List<Resource> getFiles(long id) throws ApiException {
-    return getChildren(id);
-  }
-
-  private List<Resource> getChildren(long id) throws ApiException {
-    try {
-      String input = sonarAccess.getUrlAsResultString(UrlPath.RESOURCES + id + UrlPath.DEPTH_1
-        + UrlPath.JSON_SOURCE);
-      return getResources(input);
-    } catch (IOException e) {
-      throw new ApiException(e);
-    }
-  }
-
-  private List<Resource> getResources(final String input) throws IOException {
+  private List<Metric> getMetrics(final String input) throws IOException {
+    ObjectMapper mapper = new ObjectMapper(); // can reuse, share globally
     TypeFactory typeFactory = mapper.getTypeFactory();
     CollectionType collectionType = typeFactory.constructCollectionType(
-      List.class, Resource.class);
+      List.class, Metric.class);
     return mapper.readValue(input, collectionType);
   }
-
 }

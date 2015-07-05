@@ -19,8 +19,9 @@
  */
 package de.rinderle.softvis3d.webservice;
 
-import de.rinderle.softvis3d.dao.DaoService;
-import de.rinderle.softvis3d.domain.Metric;
+import de.rinderle.softvis3d.dao.entity.Metric;
+import de.rinderle.softvis3d.dao.entity.MetricAdapter;
+import de.rinderle.softvis3d.webservice.config.ConfigJsonWriter;
 import de.rinderle.softvis3d.webservice.config.ConfigWebserviceHandler;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -29,43 +30,42 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.sonar.api.config.Settings;
-import org.sonar.api.database.DatabaseSession;
 import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.Response;
 import org.sonar.api.server.ws.WebService;
 import org.sonar.api.utils.text.JsonWriter;
 import org.sonar.api.utils.text.XmlWriter;
 
-import java.io.StringWriter;
-import java.util.ArrayList;
+import java.util.Collections;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @Ignore
 public class ConfigWebserviceHandlerTest {
 
-  private final StringWriter stringWriter = new StringWriter();
-  private final JsonWriter jsonWriter = JsonWriter.of(this.stringWriter);
-
   private final Integer snapshotId = 123;
+
+  @Mock
+  private MetricAdapter metricAdapter;
+  @Mock
+  private ConfigJsonWriter configJsonWriter;
 
   @InjectMocks
   private final ConfigWebserviceHandler handler = new ConfigWebserviceHandler();
-  @Mock
-  private DaoService daoService;
-  @Mock
-  private DatabaseSession session;
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
 
-    this.handler.setDatabaseSession(session);
     final Settings settings = new Settings();
-    settings.setProperty("cacheEnabled", false);
+    settings.setProperty("metric1", "ncloc");
+    settings.setProperty("metric2", "lines");
     this.handler.setSettings(settings);
   }
 
@@ -74,18 +74,12 @@ public class ConfigWebserviceHandlerTest {
     final Request request = this.createRequest();
     final Response response = this.createResponse();
 
-    when(daoService.getMetric1FromSettings(any(Settings.class))).thenReturn(1);
-    when(daoService.getMetric2FromSettings(any(Settings.class))).thenReturn(2);
-    when(daoService.getDefinedMetricsForSnapshot(eq(snapshotId))).thenReturn(new ArrayList<Metric>());
-    when(daoService.hasDependencies(eq(snapshotId))).thenReturn(false);
+    when(metricAdapter.getAllMetrics()).thenReturn(Collections.<Metric>emptyList());
 
     this.handler.handle(request, response);
 
-    System.out.println(this.stringWriter.toString());
-
-    // empty response because json transformer are mocked.
-    assertEquals("{\"hasDependencies\":false,\"settings\":{\"metric1\":1,\"metric2\":2},\"metricsForSnapshot\":[]}",
-      this.stringWriter.toString());
+    verify(configJsonWriter, times(1)).transform(
+            any(JsonWriter.class), eq("ncloc"), eq("lines"), anyListOf(Metric.class), anyBoolean());
   }
 
   private Request createRequest() {
@@ -104,6 +98,8 @@ public class ConfigWebserviceHandlerTest {
       public String param(final String key) {
         if ("snapshotId".equals(key)) {
           return ConfigWebserviceHandlerTest.this.snapshotId.toString();
+        } else if ("resourceId".equals(key)) {
+          return ConfigWebserviceHandlerTest.this.snapshotId.toString();
         } else {
           return "";
         }
@@ -115,7 +111,7 @@ public class ConfigWebserviceHandlerTest {
     return new Response() {
       @Override
       public JsonWriter newJsonWriter() {
-        return ConfigWebserviceHandlerTest.this.jsonWriter;
+        return null;
       }
 
       @Override

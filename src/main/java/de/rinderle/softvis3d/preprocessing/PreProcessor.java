@@ -23,6 +23,7 @@ import com.google.inject.Inject;
 import de.rinderle.softvis3d.SoftVis3DPlugin;
 import de.rinderle.softvis3d.cache.SnapshotCacheService;
 import de.rinderle.softvis3d.dao.DaoService;
+import de.rinderle.softvis3d.dao.entity.ApiException;
 import de.rinderle.softvis3d.domain.LayoutViewType;
 import de.rinderle.softvis3d.domain.SnapshotStorageKey;
 import de.rinderle.softvis3d.domain.SnapshotTreeResult;
@@ -49,7 +50,7 @@ public class PreProcessor {
   @Inject
   private DependencyExpander dependencyExpander;
 
-  public SnapshotTreeResult process(VisualizationRequest requestDTO) {
+  public SnapshotTreeResult process(VisualizationRequest requestDTO) throws ApiException {
     snapshotCacheService.printCacheContents();
 
     final SnapshotStorageKey mapKey = new SnapshotStorageKey(requestDTO);
@@ -58,6 +59,7 @@ public class PreProcessor {
     if (SoftVis3DPlugin.CACHE_ENABLED && snapshotCacheService.containsKey(mapKey)) {
       result = snapshotCacheService.getSnapshotTreeResult(mapKey);
     } else {
+
       final RootTreeNode tree = treeBuilder.createTreeStructure(requestDTO);
       this.optimizeTreeStructure.removeUnnecessaryNodes(tree);
 

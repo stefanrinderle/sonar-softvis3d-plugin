@@ -27,11 +27,15 @@ import de.rinderle.softvis3d.domain.tree.ValueTreeNode;
 
 import java.util.Map;
 import java.util.regex.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is used to create a tree out of path information.
  */
 public class PathWalker {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(PathWalker.class);
 
   private final RootTreeNode root;
   private final Pattern pathSeparator = Pattern.compile("/");
@@ -48,6 +52,8 @@ public class PathWalker {
   }
 
   public void addPath(final SonarSnapshot element) {
+    LOGGER.info("add path " + element.getPath());
+
     String[] names = this.pathSeparator.split(element.getPath());
 
     TreeNode currentNode = this.root;

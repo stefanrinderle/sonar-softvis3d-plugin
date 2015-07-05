@@ -21,6 +21,9 @@ package de.rinderle.softvis3d.preprocessing.tree;
 
 import com.google.inject.Inject;
 import de.rinderle.softvis3d.dao.DaoService;
+import de.rinderle.softvis3d.dao.entity.ApiException;
+import de.rinderle.softvis3d.dao.entity.ProjectWrapper;
+import de.rinderle.softvis3d.dao.webservice.SonarAccess;
 import de.rinderle.softvis3d.domain.VisualizationRequest;
 import de.rinderle.softvis3d.domain.sonar.ModuleInfo;
 import de.rinderle.softvis3d.domain.sonar.SonarSnapshot;
@@ -38,34 +41,45 @@ public class TreeBuilder {
 
   @Inject
   private DaoService daoService;
+  @Inject
+  private ProjectWrapper projectWrapper;
 
-  public RootTreeNode createTreeStructure(final VisualizationRequest requestDTO) {
+  public RootTreeNode createTreeStructure(final VisualizationRequest requestDTO) throws ApiException {
     LOGGER.info("Create tree structure for id " + requestDTO.getRootSnapshotId());
-    final PathWalker pathWalker = new PathWalker(requestDTO.getRootSnapshotId());
 
-    final List<ModuleInfo> modules = getModules(requestDTO.getRootSnapshotId());
+    String url = "http://localhost";
+    SonarAccess sonarAccess = new SonarAccess(url, "admin", "admin");
+    RootTreeNode result = projectWrapper.initializeProject(requestDTO.getRootSnapshotId());
 
-    LOGGER.info("Number of modules: " + modules.size());
+    LOGGER.info(result.toString());
+    LOGGER.info(result.getAllChildrenNodesSize() + "");
+    LOGGER.info("XXXXXXXXXXXXXX");
 
-    if (!modules.isEmpty()) {
-      for (ModuleInfo module : modules) {
-        VisualizationRequest moduleTemp =
-          new VisualizationRequest(module.getId(), requestDTO.getViewType(),
-            requestDTO.getFootprintMetricId(), requestDTO.getHeightMetricId());
+//    final PathWalker pathWalker = new PathWalker(requestDTO.getRootSnapshotId());
+//
+//    final List<ModuleInfo> modules = getModules(requestDTO.getRootSnapshotId());
+//
+//    LOGGER.info("Number of modules: " + modules.size());
+//
+//    if (!modules.isEmpty()) {
+//      for (ModuleInfo module : modules) {
+//        VisualizationRequest moduleTemp =
+//          new VisualizationRequest(module.getId(), requestDTO.getViewType(),
+//            requestDTO.getFootprintMetricId(), requestDTO.getHeightMetricId());
+//
+//        SonarSnapshotBuilder builder = new SonarSnapshotBuilder(module.getId()).withPath(module.getName());
+//
+//        SonarSnapshot moduleElement = builder.build();
+//        LOGGER.info(moduleElement.toString());
+//        pathWalker.addPath(moduleElement);
+//
+//        addModuleToTreeWalker(pathWalker, moduleTemp, module.getName());
+//      }
+//    } else {
+//      addModuleToTreeWalker(pathWalker, requestDTO, "");
+//    }
 
-        SonarSnapshotBuilder builder = new SonarSnapshotBuilder(module.getId()).withPath(module.getName());
-
-        SonarSnapshot moduleElement = builder.build();
-        LOGGER.info(moduleElement.toString());
-        pathWalker.addPath(moduleElement);
-
-        addModuleToTreeWalker(pathWalker, moduleTemp, module.getName());
-      }
-    } else {
-      addModuleToTreeWalker(pathWalker, requestDTO, "");
-    }
-
-    return pathWalker.getTree();
+    return result;
   }
 
   private void addModuleToTreeWalker(PathWalker pathWalker, final VisualizationRequest requestDTO,
