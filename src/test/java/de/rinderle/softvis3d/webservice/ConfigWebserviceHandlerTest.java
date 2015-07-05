@@ -74,7 +74,7 @@ public class ConfigWebserviceHandlerTest {
     final Request request = this.createRequest();
     final Response response = this.createResponse();
 
-    when(metricAdapter.getAllMetrics()).thenReturn(Collections.<Metric>emptyList());
+    when(metricAdapter.getFilteredMetrics()).thenReturn(Collections.<Metric>emptyList());
 
     this.handler.handle(request, response);
 

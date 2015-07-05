@@ -20,6 +20,7 @@
 package de.rinderle.softvis3d.layout.bottomup;
 
 import de.rinderle.softvis3d.TestTreeBuilder;
+import de.rinderle.softvis3d.dao.entity.Metric;
 import de.rinderle.softvis3d.domain.LayoutViewType;
 import de.rinderle.softvis3d.domain.SnapshotStorageKey;
 import de.rinderle.softvis3d.domain.SnapshotTreeResult;
@@ -58,7 +59,8 @@ public class BottomUpLayoutBeanTest {
   @Test
   public void testAccept() throws Exception {
     final int snapshotId = 1;
-    final VisualizationRequest requestDTO = new VisualizationRequest(snapshotId, LayoutViewType.CITY, "ncloc", "lines");
+    Metric emptyMetric = new Metric();
+    final VisualizationRequest requestDTO = new VisualizationRequest(snapshotId, LayoutViewType.CITY, emptyMetric, emptyMetric);
     final SnapshotStorageKey storageKey = new SnapshotStorageKey(requestDTO);
 
     final RootTreeNode tree = new RootTreeNode(snapshotId);

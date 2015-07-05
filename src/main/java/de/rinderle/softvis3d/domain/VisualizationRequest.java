@@ -19,6 +19,7 @@
  */
 package de.rinderle.softvis3d.domain;
 
+import de.rinderle.softvis3d.dao.entity.Metric;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -28,16 +29,16 @@ public class VisualizationRequest {
 
   private final LayoutViewType viewType;
 
-  private final String footprintMetricKey;
-  private final String heightMetricKey;
+  private final Metric footprintMetric;
+  private final Metric heightMetric;
 
-  public VisualizationRequest(int rootResourceId, LayoutViewType viewType, String footprintMetricKey, String heightMetricKey) {
+  public VisualizationRequest(int rootResourceId, LayoutViewType viewType, Metric footprintMetric, Metric heightMetric) {
     this.rootResourceId = rootResourceId;
 
     this.viewType = viewType;
 
-    this.footprintMetricKey = footprintMetricKey;
-    this.heightMetricKey = heightMetricKey;
+    this.footprintMetric = footprintMetric;
+    this.heightMetric = heightMetric;
   }
 
   public int getRootResourceId() {
@@ -49,17 +50,17 @@ public class VisualizationRequest {
   }
 
   public String getFootprintMetricKey() {
-    return this.footprintMetricKey;
+    return this.footprintMetric.getKey();
   }
 
   public String getHeightMetricKey() {
-    return this.heightMetricKey;
+    return this.heightMetric.getKey();
   }
 
   @Override
   public String toString() {
     return "VisualizationRequest{" + "rootResourceId=" + rootResourceId + ", viewType=" + viewType
-      + ", footprintMetricId=" + footprintMetricKey + ", heightMetricId=" + heightMetricKey + '}';
+      + ", footprintMetricId=" + footprintMetric + ", heightMetricId=" + heightMetric + '}';
   }
 
   @Override
@@ -76,8 +77,8 @@ public class VisualizationRequest {
 
     return new EqualsBuilder()
       .append(rootResourceId, that.rootResourceId)
-      .append(footprintMetricKey, that.footprintMetricKey)
-      .append(heightMetricKey, that.heightMetricKey)
+      .append(footprintMetric, that.footprintMetric)
+      .append(heightMetric, that.heightMetric)
       .append(viewType, that.viewType)
       .isEquals();
   }
@@ -87,8 +88,16 @@ public class VisualizationRequest {
     return new HashCodeBuilder(17, 37)
       .append(rootResourceId)
       .append(viewType)
-      .append(footprintMetricKey)
-      .append(heightMetricKey)
+      .append(footprintMetric)
+      .append(heightMetric)
       .toHashCode();
+  }
+
+  public Metric getFootprintMetric() {
+    return footprintMetric;
+  }
+
+  public Metric getHeightMetric() {
+    return heightMetric;
   }
 }

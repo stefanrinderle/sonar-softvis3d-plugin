@@ -20,14 +20,22 @@
 package de.rinderle.softvis3d.dao.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Metric {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(Metric.class);
+
   private String key;
   private String name;
-  private String val_type;
+  @JsonProperty("val_type")
+  private String valueType;
   private boolean hidden;
+  private int direction;
+  private boolean qualitative;
 
   public void setKey(String key) {
     this.key = key;
@@ -37,12 +45,20 @@ public class Metric {
     this.name = name;
   }
 
-  public void setVal_type(String val_type) {
-    this.val_type = val_type;
+  public void setValueType(String valueType) {
+    this.valueType = valueType;
   }
 
   public void setHidden(boolean hidden) {
     this.hidden = hidden;
+  }
+
+  public void setDirection(int direction) {
+    this.direction = direction;
+  }
+
+  public void setQualitative(boolean qualitative) {
+    this.qualitative = qualitative;
   }
 
   public String getKey() {
@@ -53,11 +69,24 @@ public class Metric {
     return name;
   }
 
-  public String getVal_type() {
-    return val_type;
+  public ValueType getValueType() {
+    try {
+      return ValueType.valueOf(this.valueType);
+    } catch (IllegalArgumentException e) {
+      LOGGER.error("Unknown metric value type " + this.valueType);
+      return ValueType.UNKNOWN;
+    }
   }
 
   public boolean isHidden() {
     return hidden;
+  }
+
+  public int getDirection() {
+    return direction;
+  }
+
+  public boolean isQualitative() {
+    return qualitative;
   }
 }

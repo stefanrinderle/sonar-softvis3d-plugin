@@ -23,14 +23,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import de.rinderle.softvis3d.dao.webservice.SonarAccess;
 import de.rinderle.softvis3d.dao.webservice.UrlPath;
+import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
 
+@Singleton
 public class MetricAdapter {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MetricAdapter.class);
@@ -38,27 +41,56 @@ public class MetricAdapter {
   @Inject
   private SonarAccess sonarAccess;
 
-  public Metric getMetricById(final String key) throws ApiException {
-    LOGGER.info("Retrieving metric info for " + key);
+  private List<Metric> availableMetrics;
+  private List<Metric> filteredMetrics;
+
+  public MetricAdapter() {
+    super();
+    LOGGER.info("Constructor MetricAdapter");
+  }
+
+  public Metric getMetricByKey(String key) {
+    for (Metric metric : this.availableMetrics) {
+      if (metric.getKey().equals(key)) {
+        return metric;
+      }
+    }
+
+    LOGGER.error("Metric not found " + key);
+    return null;
+  }
+
+  public List<Metric> getFilteredMetrics() throws ApiException {
+    initialize();
+
+    return this.filteredMetrics;
+  }
+
+  private void initialize() throws ApiException {
+    if (availableMetrics == null) {
+      initializeMetrics();
+    }
+  }
+
+  private void initializeMetrics() throws ApiException {
     try {
-      String input = sonarAccess.getUrlAsResultString(UrlPath.METRIC + UrlPath.SLASH + key);
+      String input = sonarAccess.getUrlAsResultString(UrlPath.METRIC);
+      this.availableMetrics = getMetrics(input);
 
-      List<Metric> result = getMetrics(input);
-
-      return result.get(0);
-
+      this.filteredMetrics = filterMetrics();
     } catch (IOException e) {
       throw new ApiException(e);
     }
   }
 
-  public List<Metric> getAllMetrics() throws ApiException {
-    try {
-      String input = sonarAccess.getUrlAsResultString(UrlPath.METRIC);
-      return getMetrics(input);
-    } catch (IOException e) {
-      throw new ApiException(e);
+  private List<Metric> filterMetrics() {
+    List<Metric> result = new ArrayList<>();
+    for (Metric metric : this.availableMetrics) {
+      if (metric.getValueType().isNumeric() && !metric.isHidden()) {
+        result.add(metric);
+      }
     }
+    return result;
   }
 
   private List<Metric> getMetrics(final String input) throws IOException {

@@ -30,6 +30,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -53,8 +55,8 @@ public class ProjectWrapperTest {
   public void testInitProjectStructureNoModules() throws Exception {
     Integer id = 1;
     Resource resource = createResourceWithId(id);
-    when(resourceAdapter.getResourceById(eq(id))).thenReturn(resource);
-    when(resourceAdapter.getModules(eq(id))).thenReturn(Collections.<Resource>emptyList());
+    when(resourceAdapter.getResourceById(anyLong())).thenReturn(resource);
+    when(resourceAdapter.getModules(anyLong())).thenReturn(Collections.<Resource>emptyList());
 
     underTest.initProjectStructure(createVisualizationRequest(id));
   }
@@ -63,12 +65,12 @@ public class ProjectWrapperTest {
   public void testInitProjectStructureModules() throws Exception {
     Integer id = 1;
     Resource resource = createResourceWithId(id);
-    when(resourceAdapter.getResourceById(eq(id))).thenReturn(resource);
+    when(resourceAdapter.getResourceById(anyLong())).thenReturn(resource);
     List<Resource> modules = new ArrayList<>();
     modules.add(createResourceWithId(2));
     modules.add(createResourceWithId(3));
     modules.add(createResourceWithId(4));
-    when(resourceAdapter.getModules(eq(id))).thenReturn(modules);
+    when(resourceAdapter.getModules(anyLong())).thenReturn(modules);
 
     underTest.initProjectStructure(createVisualizationRequest(id));
   }
@@ -80,7 +82,9 @@ public class ProjectWrapperTest {
   }
 
   private VisualizationRequest createVisualizationRequest(Integer id) {
-    return new VisualizationRequest(id, LayoutViewType.CITY, "ncloc", "lines");
+    Metric emptyMetric = new Metric();
+    emptyMetric.setKey("metricKey");
+    return new VisualizationRequest(id, LayoutViewType.CITY, emptyMetric, emptyMetric);
   }
 
 }

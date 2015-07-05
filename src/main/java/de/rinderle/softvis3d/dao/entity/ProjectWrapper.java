@@ -49,8 +49,8 @@ public class ProjectWrapper {
 
     for (Resource file : allFiles) {
 
-      double footprintMeasure = findMeasureValue(file, requestDTO.getFootprintMetricKey());
-      double heightMeasure = findMeasureValue(file, requestDTO.getHeightMetricKey());
+      double footprintMeasure = getMeasureValue(file, requestDTO.getFootprintMetric());
+      double heightMeasure = getMeasureValue(file, requestDTO.getHeightMetric());
 
       SonarSnapshot moduleElement = new SonarSnapshotBuilder((int) file.getId())
         .withPath(file.getName())
@@ -64,14 +64,16 @@ public class ProjectWrapper {
     return pathWalker.getTree();
   }
 
-  private Double findMeasureValue(Resource file, String metricKey) {
+  private Double getMeasureValue(Resource file, Metric metricMetadata) {
     for (MetricResult metric : file.getMsr()) {
-      if (metric.getKey().equals(metricKey)) {
+      if (metric.getKey().equals(metricMetadata.getKey())) {
+        // currently, only numeric metrics are allowed.
+        // if this is going to change, change the logic how the metric value is resolved here.
         return Double.parseDouble(metric.getVal());
       }
     }
 
-    LOGGER.error("No measures found " + file.toString());
+    LOGGER.error("No measures found " + metricMetadata.getKey() + " " + file.toString());
 
     return 0.0;
   }

@@ -19,6 +19,7 @@
  */
 package de.rinderle.softvis3d.cache;
 
+import de.rinderle.softvis3d.dao.entity.Metric;
 import de.rinderle.softvis3d.domain.LayoutViewType;
 import de.rinderle.softvis3d.domain.SnapshotStorageKey;
 import de.rinderle.softvis3d.domain.SnapshotTreeResult;
@@ -57,7 +58,8 @@ public class SnapshotCacheServiceTest {
   }
 
   private SnapshotStorageKey getSnapshotStorageKey(final int id) {
-    VisualizationRequest requestDto = new VisualizationRequest(id, LayoutViewType.CITY, "ncloc", "lines");
+    Metric emptyMetric = new Metric();
+    VisualizationRequest requestDto = new VisualizationRequest(id, LayoutViewType.CITY, emptyMetric, emptyMetric);
     return new SnapshotStorageKey(requestDto);
   }
 }

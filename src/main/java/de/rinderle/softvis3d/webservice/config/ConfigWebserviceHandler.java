@@ -57,7 +57,7 @@ public class ConfigWebserviceHandler extends AbstractWebserviceHandler implement
     final String metric1Key = this.settings.getString("metric1");
     final String metric2Key = this.settings.getString("metric2");
 
-    final List<Metric> metrics = metricAdapter.getAllMetrics();
+    final List<Metric> metrics = metricAdapter.getFilteredMetrics();
 
     final boolean hasDependencies = false;//this.daoService.hasDependencies(id);
 

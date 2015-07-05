@@ -44,25 +44,26 @@ public class MetricAdapterTest {
     MockitoAnnotations.initMocks(this);
   }
 
+//  @Test
+//  public void testGetMetricById() throws Exception {
+//    final String testResultString = "[{\"key\":\"ncloc\",\"name\":\"Lines of code\",\"description\":\"Non Commenting Lines of Code\",\"domain\":\"Size\",\"qualitative\":false,\"user_managed\":false,\"direction\":-1,\"val_type\":\"INT\",\"hidden\":false}]";
+//    when(sonarAccess.getUrlAsResultString(anyString())).thenReturn(testResultString);
+//
+//    String key = "ncloc";
+//    Metric metric = underTest.getMetricById(key);
+//
+//    assertEquals(key, metric.getKey());
+//  }
+
   @Test
-  public void testGetMetricById() throws Exception {
-    final String testResultString = "[{\"key\":\"ncloc\",\"name\":\"Lines of code\",\"description\":\"Non Commenting Lines of Code\",\"domain\":\"Size\",\"qualitative\":false,\"user_managed\":false,\"direction\":-1,\"val_type\":\"INT\",\"hidden\":false}]";
-    when(sonarAccess.getUrlAsResultString(anyString())).thenReturn(testResultString);
-
-    String key = "ncloc";
-    Metric metric = underTest.getMetricById(key);
-
-    assertEquals(key, metric.getKey());
-  }
-
-  @Test
-  public void testGetModulesEmpty() throws Exception {
+  public void testGetAllMetrics() throws Exception {
     final String testResultString = "[{\"key\":\"lines\",\"name\":\"Lines\",\"description\":\"Lines\",\"domain\":\"Size\",\"qualitative\":false,\"user_managed\":false,\"direction\":-1,\"val_type\":\"INT\",\"hidden\":false},{\"key\":\"generated_lines\",\"name\":\"Generated Lines\",\"description\":\"Number of generated lines\",\"domain\":\"Size\",\"qualitative\":false,\"user_managed\":false,\"direction\":-1,\"val_type\":\"INT\",\"hidden\":false},{\"key\":\"ncloc\",\"name\":\"Lines of code\",\"description\":\"Non Commenting Lines of Code\",\"domain\":\"Size\",\"qualitative\":false,\"user_managed\":false,\"direction\":-1,\"val_type\":\"INT\",\"hidden\":false},{\"key\":\"ncloc_language_distribution\",\"name\":\"Lines of code per language\",\"description\":\"Non Commenting Lines of Code Distributed By Language\",\"domain\":\"Size\",\"qualitative\":false,\"user_managed\":false,\"direction\":-1,\"val_type\":\"DATA\",\"hidden\":false}]";
     when(sonarAccess.getUrlAsResultString(anyString())).thenReturn(testResultString);
 
-    List<Metric> metrics = underTest.getAllMetrics();
+    List<Metric> metrics = underTest.getFilteredMetrics();
 
-    assertEquals(4, metrics.size());
+    assertEquals(3, metrics.size());
+    assertEquals(ValueType.INT, metrics.get(0).getValueType());
   }
 
 }

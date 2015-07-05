@@ -20,6 +20,7 @@
 package de.rinderle.softvis3d.cache;
 
 import att.grappa.Graph;
+import de.rinderle.softvis3d.dao.entity.Metric;
 import de.rinderle.softvis3d.domain.LayoutViewType;
 import de.rinderle.softvis3d.domain.SnapshotStorageKey;
 import de.rinderle.softvis3d.domain.VisualizationRequest;
@@ -61,7 +62,8 @@ public class LayoutCacheServiceTest {
   }
 
   private SnapshotStorageKey getSnapshotStorageKey(final int id) {
-    VisualizationRequest requestDto = new VisualizationRequest(id, LayoutViewType.CITY, "ncloc", "lines");
+    Metric emptyMetric = new Metric();
+    VisualizationRequest requestDto = new VisualizationRequest(id, LayoutViewType.CITY, emptyMetric, emptyMetric);
     return new SnapshotStorageKey(requestDto);
   }
 }
