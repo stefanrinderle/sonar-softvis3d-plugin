@@ -33,7 +33,10 @@ public class UrlPath {
 
   public static final String PROJECT_SCOPE = "&scopes=" + Scopes.PROJECT;
   public static final String SLASH = "/";
+  public static final String COMMA = ",";
 
   public static final String JSON_SOURCE = "&format=json";
 
+  public static final String QUALIFIERS = "&qualifiers=";
+  public static final String METRICS = "&metrics=";
 }

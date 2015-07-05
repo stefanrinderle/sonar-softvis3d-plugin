@@ -20,6 +20,7 @@
 package de.rinderle.softvis3d.dao.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.List;
 
 /**
  * @author ashraf_sarhan
@@ -42,6 +43,8 @@ public class Resource {
 
   private String version;
 
+  private List<MetricResult> msr;
+
   public long getId() {
     return id;
   }
@@ -56,6 +59,14 @@ public class Resource {
 
   public String getVersion() {
     return version;
+  }
+
+  public List<MetricResult> getMsr() {
+    return msr;
+  }
+
+  public void setMsr(List<MetricResult> msr) {
+    this.msr = msr;
   }
 
   public void setId(long id) {
@@ -125,10 +136,16 @@ public class Resource {
   @Override
   public String toString() {
     return "Resource{" +
-            "version='" + version + '\'' +
-            ", name='" + name + '\'' +
+            "id=" + id +
             ", key='" + key + '\'' +
-            ", id=" + id +
+            ", name='" + name + '\'' +
+            ", scope='" + scope + '\'' +
+            ", qualifier='" + qualifier + '\'' +
+            ", creationDate='" + creationDate + '\'' +
+            ", lname='" + lname + '\'' +
+            ", description='" + description + '\'' +
+            ", version='" + version + '\'' +
+            ", msr=" + msr +
             '}';
   }
 }

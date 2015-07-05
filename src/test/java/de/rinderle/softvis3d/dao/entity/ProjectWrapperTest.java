@@ -19,6 +19,8 @@
  */
 package de.rinderle.softvis3d.dao.entity;
 
+import de.rinderle.softvis3d.domain.LayoutViewType;
+import de.rinderle.softvis3d.domain.VisualizationRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,7 +56,7 @@ public class ProjectWrapperTest {
     when(resourceAdapter.getResourceById(eq(id))).thenReturn(resource);
     when(resourceAdapter.getModules(eq(id))).thenReturn(Collections.<Resource>emptyList());
 
-    underTest.initProjectStructure(id);
+    underTest.initProjectStructure(createVisualizationRequest(id));
   }
 
   @Test
@@ -68,13 +70,17 @@ public class ProjectWrapperTest {
     modules.add(createResourceWithId(4));
     when(resourceAdapter.getModules(eq(id))).thenReturn(modules);
 
-    underTest.initProjectStructure(id);
+    underTest.initProjectStructure(createVisualizationRequest(id));
   }
 
   private Resource createResourceWithId(Integer id) {
     Resource resource = new Resource();
     resource.setId(id);
     return resource;
+  }
+
+  private VisualizationRequest createVisualizationRequest(Integer id) {
+    return new VisualizationRequest(id, LayoutViewType.CITY, "ncloc", "lines");
   }
 
 }

@@ -20,16 +20,17 @@
 package de.rinderle.softvis3d.dao.entity;
 
 import com.google.inject.Inject;
+import de.rinderle.softvis3d.domain.VisualizationRequest;
 import de.rinderle.softvis3d.domain.sonar.SonarSnapshot;
 import de.rinderle.softvis3d.domain.sonar.SonarSnapshotBuilder;
 import de.rinderle.softvis3d.domain.tree.RootTreeNode;
 import de.rinderle.softvis3d.preprocessing.tree.PathWalker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sonar.api.resources.Scopes;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.sonar.api.resources.Scopes;
 
 /**
  * This class encapsulates the Project info.
@@ -41,16 +42,20 @@ public class ProjectWrapper {
   @Inject
   private ResourceAdapter resourceAdapter;
 
-  public RootTreeNode initializeProject(final long id) throws ApiException {
-    List<Resource> allFiles = initProjectStructure(id);
+  public RootTreeNode initializeProject(final VisualizationRequest requestDTO) throws ApiException {
+    List<Resource> allFiles = initProjectStructure(requestDTO);
 
-    final PathWalker pathWalker = new PathWalker((int) id);
+    final PathWalker pathWalker = new PathWalker(requestDTO.getRootResourceId());
 
     for (Resource file : allFiles) {
+
+      double footprintMeasure = findMeasureValue(file, requestDTO.getFootprintMetricKey());
+      double heightMeasure = findMeasureValue(file, requestDTO.getHeightMetricKey());
+
       SonarSnapshot moduleElement = new SonarSnapshotBuilder((int) file.getId())
         .withPath(file.getName())
-        .withFootprintMeasure(50.0)
-        .withHeightMeasure(50.0)
+        .withFootprintMeasure(footprintMeasure)
+        .withHeightMeasure(heightMeasure)
         .build();
 
       pathWalker.addPath(moduleElement);
@@ -59,24 +64,37 @@ public class ProjectWrapper {
     return pathWalker.getTree();
   }
 
-  List<Resource> initProjectStructure(final long id) throws ApiException {
-    Resource resource = resourceAdapter.getResourceById(id);
+  private Double findMeasureValue(Resource file, String metricKey) {
+    for (MetricResult metric : file.getMsr()) {
+      if (metric.getKey().equals(metricKey)) {
+        return Double.parseDouble(metric.getVal());
+      }
+    }
+
+    LOGGER.error("No measures found " + file.toString());
+
+    return 0.0;
+  }
+
+  List<Resource> initProjectStructure(final VisualizationRequest requestDTO) throws ApiException {
+    Resource resource = resourceAdapter.getResourceById(requestDTO.getRootResourceId());
 
     List<Resource> result = new ArrayList<>();
     List<Resource> modules = resourceAdapter.getModules(resource.getId());
 
     if (modules.isEmpty()) {
-      result.addAll(initModule(resource, false));
+      result.addAll(initModule(requestDTO, resource, false));
     } else {
       for (Resource module : modules) {
-        result.addAll(initModule(module, true));
+        result.addAll(initModule(requestDTO, module, true));
       }
     }
 
     return result;
   }
 
-  private List<Resource> initModule(Resource module, boolean prefix) throws ApiException {
+  private List<Resource> initModule(VisualizationRequest requestDTO, Resource module, boolean prefix)
+          throws ApiException {
     LOGGER.info("init module " + module.getId());
 
     List<Resource> result = new ArrayList<>();
@@ -89,7 +107,7 @@ public class ProjectWrapper {
         LOGGER.info("--------------------------NOT A DIR ------- " + directory.getId());
       }
 
-      result.addAll(initDirectory(directory));
+      result.addAll(initDirectory(requestDTO, directory));
     }
 
     addModulePrefix(result, module, prefix);
@@ -106,8 +124,11 @@ public class ProjectWrapper {
     }
   }
 
-  private List<Resource> initDirectory(Resource directory) throws ApiException {
-    List<Resource> files = resourceAdapter.getFiles(directory.getId());
+  private List<Resource> initDirectory(VisualizationRequest requestDTO, Resource directory) throws
+          ApiException {
+    // could be extended to show also test sources by request parameter.
+    final boolean includeTestSources = false;
+    List<Resource> files = resourceAdapter.getFiles(requestDTO, directory.getId(), includeTestSources);
 
     for (Resource file : files) {
       // check really for directories, otherwise write big info message

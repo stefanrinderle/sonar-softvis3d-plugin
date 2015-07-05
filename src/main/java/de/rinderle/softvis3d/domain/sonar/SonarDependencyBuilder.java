@@ -29,12 +29,12 @@ public class SonarDependencyBuilder {
     return this;
   }
 
-  public SonarDependencyBuilder withFromSnapshotId(Integer fromSnapshotId) {
+  public SonarDependencyBuilder withFromResourceId(Integer fromSnapshotId) {
     this.fromSnapshotId = fromSnapshotId;
     return this;
   }
 
-  public SonarDependencyBuilder withToSnapshotId(Integer toSnapshotId) {
+  public SonarDependencyBuilder withToResourceId(Integer toSnapshotId) {
     this.toSnapshotId = toSnapshotId;
     return this;
   }

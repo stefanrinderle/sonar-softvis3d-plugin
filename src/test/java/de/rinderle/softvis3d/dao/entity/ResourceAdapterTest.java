@@ -78,4 +78,15 @@ public class ResourceAdapterTest {
     assertEquals(3, result.size());
   }
 
+  @Test
+  public void testGetResourceWithMetric() throws Exception {
+    final String testResultString = "[{\"id\":13743,\"key\":\"org.codehaus.sonar-plugins:sonar-softVis3D-plugin:src/main/java/de/rinderle/softvis3d/webservice/visualization/TreeNodeJsonWriter.java\",\"name\":\"TreeNodeJsonWriter.java\",\"scope\":\"FIL\",\"qualifier\":\"FIL\",\"date\":\"2015-07-05T11:27:32+0200\",\"creationDate\":\"2015-05-11T18:32:46+0200\",\"lname\":\"src/main/java/de/rinderle/softvis3d/webservice/visualization/TreeNodeJsonWriter.java\",\"lang\":\"java\",\"msr\":[{\"key\":\"lines\",\"val\":164.0,\"frmt_val\":\"164\"},{\"key\":\"complexity\",\"val\":19.0,\"frmt_val\":\"19\"}]}]";
+    when(sonarAccess.getUrlAsResultString(anyString())).thenReturn(testResultString);
+
+    Resource result = underTest.getResourceById(13743);
+
+    assertEquals(13743, result.getId());
+    assertEquals("164.0", result.getMsr().get(0).getVal());
+  }
+
 }

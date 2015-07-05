@@ -33,7 +33,6 @@ import de.rinderle.softvis3d.domain.tree.RootTreeNode;
 import de.rinderle.softvis3d.preprocessing.dependencies.DependencyExpander;
 import de.rinderle.softvis3d.preprocessing.tree.OptimizeTreeStructure;
 import de.rinderle.softvis3d.preprocessing.tree.TreeBuilder;
-import org.sonar.api.config.Settings;
 
 import java.util.List;
 
@@ -65,7 +64,7 @@ public class PreProcessor {
 
       if (LayoutViewType.DEPENDENCY.equals(requestDTO.getViewType())) {
         final List<SonarDependency> dependencies =
-          this.daoService.getDependencies(requestDTO.getRootSnapshotId());
+          this.daoService.getDependencies(requestDTO.getRootResourceId());
         this.dependencyExpander.execute(tree, dependencies);
       }
 

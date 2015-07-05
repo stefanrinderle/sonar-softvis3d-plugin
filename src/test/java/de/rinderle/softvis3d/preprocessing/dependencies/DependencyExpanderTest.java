@@ -147,8 +147,8 @@ public class DependencyExpanderTest {
   // final SonarDependencyBuilder result = new SonarDependencyBuilder();
   //
   // result.withId(new Long(dependencyId));
-  // result.withFromSnapshotId(from);
-  // result.withToSnapshotId(to);
+  // result.withFromResourceId(from);
+  // result.withToResourceId(to);
   //
   // return result.createSonarDependency();
   // }

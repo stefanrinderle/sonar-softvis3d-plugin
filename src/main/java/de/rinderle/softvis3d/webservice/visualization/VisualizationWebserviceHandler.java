@@ -133,9 +133,9 @@ public class VisualizationWebserviceHandler extends AbstractWebserviceHandler im
   }
 
   private void logStartOfCalc(VisualizationRequest visualizationRequest) {
-    LOGGER.info("Start layout calculation for snapshot " + visualizationRequest.getRootSnapshotId() + ", "
-      + "metrics " + visualizationRequest.getHeightMetricId() + " and "
-      + visualizationRequest.getFootprintMetricId());
+    LOGGER.info("Start layout calculation for snapshot " + visualizationRequest.getRootResourceId() + ", "
+      + "metrics " + visualizationRequest.getHeightMetricKey() + " and "
+      + visualizationRequest.getFootprintMetricKey());
   }
 
   public void setSettings(Settings settings) {

@@ -24,15 +24,15 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 public class VisualizationRequest {
 
-  private final int rootSnapshotId;
+  private final int rootResourceId;
 
   private final LayoutViewType viewType;
 
   private final String footprintMetricKey;
   private final String heightMetricKey;
 
-  public VisualizationRequest(int rootSnapshotId, LayoutViewType viewType, String footprintMetricKey, String heightMetricKey) {
-    this.rootSnapshotId = rootSnapshotId;
+  public VisualizationRequest(int rootResourceId, LayoutViewType viewType, String footprintMetricKey, String heightMetricKey) {
+    this.rootResourceId = rootResourceId;
 
     this.viewType = viewType;
 
@@ -40,25 +40,25 @@ public class VisualizationRequest {
     this.heightMetricKey = heightMetricKey;
   }
 
-  public int getRootSnapshotId() {
-    return this.rootSnapshotId;
+  public int getRootResourceId() {
+    return this.rootResourceId;
   }
 
   public LayoutViewType getViewType() {
     return this.viewType;
   }
 
-  public String getFootprintMetricId() {
+  public String getFootprintMetricKey() {
     return this.footprintMetricKey;
   }
 
-  public String getHeightMetricId() {
+  public String getHeightMetricKey() {
     return this.heightMetricKey;
   }
 
   @Override
   public String toString() {
-    return "VisualizationRequest{" + "rootSnapshotId=" + rootSnapshotId + ", viewType=" + viewType
+    return "VisualizationRequest{" + "rootResourceId=" + rootResourceId + ", viewType=" + viewType
       + ", footprintMetricId=" + footprintMetricKey + ", heightMetricId=" + heightMetricKey + '}';
   }
 
@@ -75,7 +75,7 @@ public class VisualizationRequest {
     VisualizationRequest that = (VisualizationRequest) o;
 
     return new EqualsBuilder()
-      .append(rootSnapshotId, that.rootSnapshotId)
+      .append(rootResourceId, that.rootResourceId)
       .append(footprintMetricKey, that.footprintMetricKey)
       .append(heightMetricKey, that.heightMetricKey)
       .append(viewType, that.viewType)
@@ -85,7 +85,7 @@ public class VisualizationRequest {
   @Override
   public int hashCode() {
     return new HashCodeBuilder(17, 37)
-      .append(rootSnapshotId)
+      .append(rootResourceId)
       .append(viewType)
       .append(footprintMetricKey)
       .append(heightMetricKey)

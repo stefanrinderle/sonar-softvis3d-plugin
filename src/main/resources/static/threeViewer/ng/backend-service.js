@@ -23,11 +23,11 @@ ThreeViewer.BackendService = function ($http) {
   this.http = $http;
 };
 
-ThreeViewer.BackendService.prototype.getVisualization = function (resourceId, footprintMetricId, heightMetricId, viewType) {
+ThreeViewer.BackendService.prototype.getVisualization = function (resourceId, footprintMetricKey, heightMetricKey, viewType) {
   return this.http.get("../../api/softVis3D/getVisualization"
       + "?resourceId=" + resourceId
-      + "&footprintMetricId=" + footprintMetricId
-      + "&heightMetricId=" + heightMetricId
+      + "&footprintMetricKey=" + footprintMetricKey
+      + "&heightMetricKey=" + heightMetricKey
       + "&viewType=" + viewType);
 };
 

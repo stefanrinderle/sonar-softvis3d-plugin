@@ -123,17 +123,17 @@ ThreeViewer.FileLoaderController.prototype.showTab = function (tab) {
 ThreeViewer.FileLoaderController.prototype.submitCityForm = function () {
   var cityType = "city";
 
-  var linesId = this.getMetricKeyForName("lines");
-  var complexityId = this.getMetricKeyForName("complexity");
-  var issuesId = this.getMetricKeyForName("violations");
-  var functionsId = this.getMetricKeyForName("functions");
+  var linesKey = "lines";
+  var complexityKey = "complexity";
+  var issuesKey = "violations";
+  var functionsKey = "functions";
 
   if (this.cityInnerState === "complexity") {
-    this.loadVisualisation(complexityId, linesId, cityType);
+    this.loadVisualisation(complexityKey, linesKey, cityType);
   } else if (this.cityInnerState === "issues") {
-    this.loadVisualisation(issuesId, linesId, cityType);
+    this.loadVisualisation(issuesKey, linesKey, cityType);
   } else if (this.cityInnerState === "functions") {
-    this.loadVisualisation(functionsId, linesId, cityType);
+    this.loadVisualisation(functionsKey, linesKey, cityType);
   } else {
     console.log("invalid option selected.");
   }
@@ -144,10 +144,10 @@ ThreeViewer.FileLoaderController.prototype.submitCityForm = function () {
  *
  */
 ThreeViewer.FileLoaderController.prototype.loadDependencyView = function () {
-  var linesId = this.getMetricKeyForName("lines");
-  var complexityId = this.getMetricKeyForName("complexity");
+  var linesKey = "lines";
+  var complexityKey = "complexity";
 
-  this.loadVisualisation(complexityId, linesId, "dependency");
+  this.loadVisualisation(complexityKey, linesKey, "dependency");
 };
 
 ThreeViewer.FileLoaderController.prototype.loadCustomView = function () {
@@ -158,12 +158,12 @@ ThreeViewer.FileLoaderController.prototype.loadDirectLink = function (metric1Id,
   this.loadVisualisation(metric1Id, metric2Id, viewType);
 };
 
-ThreeViewer.FileLoaderController.prototype.loadVisualisation = function (metric1, metric2, viewType) {
+ThreeViewer.FileLoaderController.prototype.loadVisualisation = function (metric1Key, metric2Key, viewType) {
   var me = this;
 
   this.infoInnerState = "loading";
   this.showTab("info");
-  this.BackendService.getVisualization(ThreeViewer.RESOURCE_ID, metric1, metric2, viewType).then(function (response) {
+  this.BackendService.getVisualization(ThreeViewer.RESOURCE_ID, metric1Key, metric2Key, viewType).then(function (response) {
     var treeResult = response.data.resultObject[0].treeResult;
     var visualizationResult = response.data.resultObject[1].visualizationResult;
 
@@ -172,8 +172,8 @@ ThreeViewer.FileLoaderController.prototype.loadVisualisation = function (metric1
 
     var eventObject = {};
     eventObject.softVis3dId = ThreeViewer.RESOURCE_ID;
-    eventObject.metric1Name = me.getNameForMetricId(metric1);
-    eventObject.metric2Name = me.getNameForMetricId(metric2);
+    eventObject.metric1Name = me.getNameForMetricKey(metric1Key);
+    eventObject.metric2Name = me.getNameForMetricKey(metric2Key);
 
     me.MessageBus.trigger('visualizationReady', eventObject);
 
@@ -188,20 +188,10 @@ ThreeViewer.FileLoaderController.prototype.loadVisualisation = function (metric1
   });
 };
 
-ThreeViewer.FileLoaderController.prototype.getNameForMetricId = function (metricId) {
+ThreeViewer.FileLoaderController.prototype.getNameForMetricKey = function (metricKey) {
   for (var index = 0; index < this.availableMetrics.length; index++) {
-    if (this.availableMetrics[index].key === metricId) {
+    if (this.availableMetrics[index].key === metricKey) {
       return this.availableMetrics[index].name;
-    }
-  }
-
-  return "no name found";
-};
-
-ThreeViewer.FileLoaderController.prototype.getMetricKeyForName = function (nameToSearch) {
-  for (var index = 0; index < this.availableMetrics.length; index++) {
-    if (this.availableMetrics[index].name === nameToSearch) {
-      return this.availableMetrics[index].key;
     }
   }
 

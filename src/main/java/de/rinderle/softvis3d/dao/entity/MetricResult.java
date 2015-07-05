@@ -17,36 +17,42 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package de.rinderle.softvis3d.domain;
+package de.rinderle.softvis3d.dao.entity;
 
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-public class SnapshotStorageKey {
+/**
+ * {"key":"complexity","val":8.0,"frmt_val":"8"}
+ *
+ * There is a val type: INT | BOOL | FLOAT | PERCENT | STRING | LEVEL
+ */
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class MetricResult {
 
-  private final String key;
+  private String key;
+  private String val;
 
-  public SnapshotStorageKey(final VisualizationRequest requestDTO) {
-    this.key = requestDTO.getRootResourceId() + "_"
-      + requestDTO.getViewType().name() + "_"
-      + requestDTO.getFootprintMetricKey() + "_"
-      + requestDTO.getHeightMetricKey();
+  public String getKey() {
+    return key;
+  }
+
+  public String getVal() {
+    return val;
+  }
+
+  public void setKey(String key) {
+    this.key = key;
+  }
+
+  public void setVal(String val) {
+    this.val = val;
   }
 
   @Override
   public String toString() {
-    return key;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    SnapshotStorageKey that = (SnapshotStorageKey) o;
-    return Objects.equals(key, that.key);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(key);
+    return "MetricResult{" +
+            "key='" + key + '\'' +
+            ", val='" + val + '\'' +
+            '}';
   }
 }

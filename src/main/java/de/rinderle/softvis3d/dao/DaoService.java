@@ -44,27 +44,27 @@ public class DaoService {
   @Inject
   private ScmCalculationService scmCalculationService;
 
-  public MinMaxValue getMinMaxMetricValuesByRootSnapshotId(int rootSnapshotId, String metricKey) {
-    LOGGER.debug("getMinMaxMetricValuesByRootSnapshotId " + rootSnapshotId);
-    return this.sonarDao.getMinMaxMetricValuesByRootSnapshotId(rootSnapshotId, metricKey);
+  public MinMaxValue getMinMaxMetricValuesByRootResourceId(int rootResourceId, String metricKey) {
+    LOGGER.debug("getMinMaxMetricValuesByRootResourceId " + rootResourceId);
+    return this.sonarDao.getMinMaxMetricValuesByRootSnapshotId(rootResourceId, metricKey);
   }
 
-  public boolean hasDependencies(Integer snapshotId) {
-    LOGGER.debug("hasDependencies" + snapshotId);
+  public boolean hasDependencies(Integer resourceId) {
+    LOGGER.debug("hasDependencies" + resourceId);
 
-    final List<SonarDependency> result = getDependencies(snapshotId);
+    final List<SonarDependency> result = getDependencies(resourceId);
 
     return !result.isEmpty();
   }
 
-  public List<ModuleInfo> getDirectModuleChildrenIds(Integer snapshotId) {
-    return this.sonarDao.getDirectModuleChildrenIds(snapshotId);
+  public List<ModuleInfo> getDirectModuleChildrenIds(Integer resourceId) {
+    return this.sonarDao.getDirectModuleChildrenIds(resourceId);
   }
 
-  public int getMaxScmInfo(int rootSnapshotId) {
+  public int getMaxScmInfo(int rootResourceId) {
     int maxAuthorsCount = 0;
 
-    final List<MetricResultDTO<String>> scmCommitter = getScmAuthors(rootSnapshotId);
+    final List<MetricResultDTO<String>> scmCommitter = getScmAuthors(rootResourceId);
     for (MetricResultDTO<String> aScmCommitter : scmCommitter) {
       final int differentAuthors = scmCalculationService.getDifferentAuthors(aScmCommitter.getValue(), "");
 
@@ -78,14 +78,14 @@ public class DaoService {
     return maxAuthorsCount;
   }
 
-  public List<SonarDependency> getDependencies(Integer snapshotId) {
-    LOGGER.debug("getDependencies " + snapshotId);
+  public List<SonarDependency> getDependencies(Integer resourceId) {
+    LOGGER.debug("getDependencies " + resourceId);
 
-    List<ModuleInfo> modules = getDirectModuleChildrenIds(snapshotId);
+    List<ModuleInfo> modules = getDirectModuleChildrenIds(resourceId);
 
     List<SonarDependency> result = new ArrayList<SonarDependency>();
     if (modules == null || modules.isEmpty()) {
-      result = this.dependencyDao.getDependencies(snapshotId);
+      result = this.dependencyDao.getDependencies(resourceId);
     } else {
       for (ModuleInfo module : modules) {
         result.addAll(this.dependencyDao.getDependencies(module.getId()));
@@ -95,10 +95,10 @@ public class DaoService {
     return result;
   }
 
-  private List<MetricResultDTO<String>> getScmAuthors(int rootSnapshotId) {
+  private List<MetricResultDTO<String>> getScmAuthors(int rootResourceId) {
     final Integer authorMetricId = this.sonarDao.getMetricIdByKey(SCM_AUTHOR_NAME);
 
-    return this.sonarDao.getMetricTextForAllProjectElementsWithMetric(rootSnapshotId, authorMetricId);
+    return this.sonarDao.getMetricTextForAllProjectElementsWithMetric(rootResourceId, authorMetricId);
   }
 
 }

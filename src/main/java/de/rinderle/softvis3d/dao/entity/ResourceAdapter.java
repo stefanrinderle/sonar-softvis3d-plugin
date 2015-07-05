@@ -25,11 +25,13 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.google.inject.Inject;
 import de.rinderle.softvis3d.dao.webservice.SonarAccess;
 import de.rinderle.softvis3d.dao.webservice.UrlPath;
+import de.rinderle.softvis3d.domain.VisualizationRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
+import org.sonar.api.resources.Qualifiers;
 
 public class ResourceAdapter {
 
@@ -67,17 +69,30 @@ public class ResourceAdapter {
   }
 
   public List<Resource> getDirectories(long id) throws ApiException {
-    return getChildren(id);
-  }
-
-  public List<Resource> getFiles(long id) throws ApiException {
-    return getChildren(id);
-  }
-
-  private List<Resource> getChildren(long id) throws ApiException {
     try {
       String input = sonarAccess.getUrlAsResultString(UrlPath.RESOURCES + id + UrlPath.DEPTH_1
-        + UrlPath.JSON_SOURCE);
+              + UrlPath.QUALIFIERS + Qualifiers.DIRECTORY + UrlPath.JSON_SOURCE);
+      return getResources(input);
+    } catch (IOException e) {
+      throw new ApiException(e);
+    }
+  }
+
+  public List<Resource> getFiles(VisualizationRequest requestDTO, long id, boolean includeTestFiles) throws ApiException {
+    if (includeTestFiles) {
+      return getFiles(requestDTO, id, Qualifiers.FILE + UrlPath.COMMA + Qualifiers.UNIT_TEST_FILE);
+    } else {
+      return getFiles(requestDTO, id, Qualifiers.FILE);
+    }
+  }
+
+  private List<Resource> getFiles(VisualizationRequest requestDTO, long id, final String qualifierList) throws ApiException {
+    final String metricList = requestDTO.getFootprintMetricKey() + UrlPath.COMMA + requestDTO.getHeightMetricKey();
+    try {
+      final String url = UrlPath.RESOURCES + id + UrlPath.DEPTH_1
+              + UrlPath.METRICS + metricList
+              + UrlPath.QUALIFIERS + qualifierList + UrlPath.JSON_SOURCE;
+      String input = sonarAccess.getUrlAsResultString(url);
       return getResources(input);
     } catch (IOException e) {
       throw new ApiException(e);

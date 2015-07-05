@@ -42,14 +42,14 @@ public class DependencyDao {
     this.session = session;
   }
 
-  public List<SonarDependency> getDependencies(final Integer projectSnapshotId) {
+  public List<SonarDependency> getDependencies(final Integer rootResourceId) {
     final String sqlQuery =
       "SELECT d.id, d.fromSnapshotId, d.toSnapshotId FROM " + DependencyDto.class.getSimpleName() + " d "
         + "WHERE d.projectSnapshotId = :projectSnapshotId AND fromScope = 'FIL' AND toScope = 'FIL' ";
 
     final Query query = this.session.createQuery(sqlQuery);
 
-    query.setParameter("projectSnapshotId", projectSnapshotId);
+    query.setParameter("projectSnapshotId", rootResourceId);
 
     final List<Object[]> queryResult = (List<Object[]>) query.getResultList();
 
@@ -62,8 +62,8 @@ public class DependencyDao {
     for (final Object[] object : queryResult) {
       final SonarDependencyBuilder dependency = new SonarDependencyBuilder();
       dependency.withId((Long) object[0]);
-      dependency.withFromSnapshotId((Integer) object[1]);
-      dependency.withToSnapshotId((Integer) object[2]);
+      dependency.withFromResourceId((Integer) object[1]);
+      dependency.withToResourceId((Integer) object[2]);
 
       result.add(dependency.createSonarDependency());
     }

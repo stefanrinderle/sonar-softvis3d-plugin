@@ -84,17 +84,17 @@ public class SnapshotVisitorBean implements SnapshotVisitor {
     this.edgeFactory = edgeFactory;
 
     this.minMaxMetricFootprint =
-      daoService.getMinMaxMetricValuesByRootSnapshotId(requestDTO.getRootSnapshotId(),
-        requestDTO.getFootprintMetricId());
+      daoService.getMinMaxMetricValuesByRootResourceId(requestDTO.getRootResourceId(),
+              requestDTO.getFootprintMetricKey());
     this.minMaxMetricHeight =
-      daoService.getMinMaxMetricValuesByRootSnapshotId(requestDTO.getRootSnapshotId(),
-        requestDTO.getHeightMetricId());
+      daoService.getMinMaxMetricValuesByRootResourceId(requestDTO.getRootResourceId(),
+              requestDTO.getHeightMetricKey());
 
-    this.dependenciesCount = daoService.getDependencies(requestDTO.getRootSnapshotId()).size();
+    this.dependenciesCount = daoService.getDependencies(requestDTO.getRootResourceId()).size();
 
-    this.maxScmInfo = daoService.getMaxScmInfo(requestDTO.getRootSnapshotId());
+    this.maxScmInfo = daoService.getMaxScmInfo(requestDTO.getRootResourceId());
 
-    LOGGER.info("minMaxValues for " + requestDTO.getRootSnapshotId() + " : " + minMaxMetricFootprint.toString()
+    LOGGER.info("minMaxValues for " + requestDTO.getRootResourceId() + " : " + minMaxMetricFootprint.toString()
       + " " + minMaxMetricHeight.toString() + " Dependencies: " + this.dependenciesCount);
 
     this.viewType = requestDTO.getViewType();

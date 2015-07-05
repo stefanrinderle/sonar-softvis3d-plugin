@@ -20,21 +20,14 @@
 package de.rinderle.softvis3d.preprocessing.tree;
 
 import com.google.inject.Inject;
-import de.rinderle.softvis3d.dao.DaoService;
 import de.rinderle.softvis3d.dao.entity.ApiException;
 import de.rinderle.softvis3d.dao.entity.ProjectWrapper;
 import de.rinderle.softvis3d.dao.webservice.SonarAccess;
 import de.rinderle.softvis3d.domain.VisualizationRequest;
-import de.rinderle.softvis3d.domain.sonar.ModuleInfo;
-import de.rinderle.softvis3d.domain.sonar.SonarSnapshot;
-import de.rinderle.softvis3d.domain.sonar.SonarSnapshotBuilder;
 import de.rinderle.softvis3d.domain.tree.RootTreeNode;
 import org.apache.commons.lang.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TreeBuilder {
 
@@ -44,21 +37,19 @@ public class TreeBuilder {
   private ProjectWrapper projectWrapper;
 
   public RootTreeNode createTreeStructure(final VisualizationRequest requestDTO) throws ApiException {
-    LOGGER.info("Create tree structure for id " + requestDTO.getRootSnapshotId());
+    LOGGER.info("Create tree structure for id " + requestDTO.getRootResourceId());
 
     final StopWatch stopWatch = new StopWatch();
     stopWatch.start();
 
     String url = "http://localhost";
     SonarAccess sonarAccess = new SonarAccess(url, "admin", "admin");
-    RootTreeNode result = projectWrapper.initializeProject(requestDTO.getRootSnapshotId());
+    RootTreeNode result = projectWrapper.initializeProject(requestDTO);
 
     stopWatch.stop();
 
-    LOGGER.info(result.toString());
-    LOGGER.info(result.getAllChildrenNodesSize() + "");
-    LOGGER.info("Time for getting snapshots " + stopWatch.getTime() + " ms");
-    LOGGER.info("XXXXXXXXXXXXXX");
+    LOGGER.info("Time for getting snapshots with " + result.getAllChildrenNodesSize() + " nodes: "
+            + stopWatch.getTime() + " ms");
 
     return result;
   }

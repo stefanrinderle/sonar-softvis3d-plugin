@@ -53,8 +53,8 @@ public class TestTreeBuilder {
     final SonarDependencyBuilder result = new SonarDependencyBuilder();
 
     result.withId(new Long(from + "" + to));
-    result.withFromSnapshotId(from);
-    result.withToSnapshotId(to);
+    result.withFromResourceId(from);
+    result.withToResourceId(to);
 
     return result.createSonarDependency();
   }
@@ -63,8 +63,8 @@ public class TestTreeBuilder {
     final SonarDependencyBuilder result = new SonarDependencyBuilder();
 
     result.withId(new Long(id));
-    result.withFromSnapshotId(from);
-    result.withToSnapshotId(to);
+    result.withFromResourceId(from);
+    result.withToResourceId(to);
 
     return result.createSonarDependency();
   }
