@@ -74,7 +74,7 @@ ThreeViewer.FileLoaderController.prototype.init = function () {
   var me = this;
 
   this.waitFor(500, 0, function () {
-    me.BackendService.getConfig(ThreeViewer.SNAPSHOT_ID, ThreeViewer.RESOURCE_ID).then(function (response) {
+    me.BackendService.getConfig(ThreeViewer.RESOURCE_ID).then(function (response) {
       me.settings = response.data.settings;
       me.availableMetrics = response.data.metricsForSnapshot;
       me.hasDependencies = response.data.hasDependencies;
@@ -90,7 +90,7 @@ ThreeViewer.FileLoaderController.prototype.init = function () {
 ThreeViewer.FileLoaderController.prototype.waitFor = function(msec, count, callback) {
   var me = this;
   // Check if condition met. If not, re-check later (msec).
-  if (ThreeViewer.SNAPSHOT_ID === undefined) {
+  if (ThreeViewer.RESOURCE_ID === undefined) {
     count++;
     setTimeout(function () {
       me.waitFor(msec, count, callback);
@@ -163,7 +163,7 @@ ThreeViewer.FileLoaderController.prototype.loadVisualisation = function (metric1
 
   this.infoInnerState = "loading";
   this.showTab("info");
-  this.BackendService.getVisualization(ThreeViewer.SNAPSHOT_ID, ThreeViewer.RESOURCE_ID, metric1, metric2, viewType).then(function (response) {
+  this.BackendService.getVisualization(ThreeViewer.RESOURCE_ID, metric1, metric2, viewType).then(function (response) {
     var treeResult = response.data.resultObject[0].treeResult;
     var visualizationResult = response.data.resultObject[1].visualizationResult;
 

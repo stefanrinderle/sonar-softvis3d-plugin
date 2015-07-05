@@ -29,6 +29,7 @@ import de.rinderle.softvis3d.domain.sonar.ModuleInfo;
 import de.rinderle.softvis3d.domain.sonar.SonarSnapshot;
 import de.rinderle.softvis3d.domain.sonar.SonarSnapshotBuilder;
 import de.rinderle.softvis3d.domain.tree.RootTreeNode;
+import org.apache.commons.lang.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,67 +41,24 @@ public class TreeBuilder {
   private static final Logger LOGGER = LoggerFactory.getLogger(TreeBuilder.class);
 
   @Inject
-  private DaoService daoService;
-  @Inject
   private ProjectWrapper projectWrapper;
 
   public RootTreeNode createTreeStructure(final VisualizationRequest requestDTO) throws ApiException {
     LOGGER.info("Create tree structure for id " + requestDTO.getRootSnapshotId());
 
+    final StopWatch stopWatch = new StopWatch();
+    stopWatch.start();
+
     String url = "http://localhost";
     SonarAccess sonarAccess = new SonarAccess(url, "admin", "admin");
     RootTreeNode result = projectWrapper.initializeProject(requestDTO.getRootSnapshotId());
 
+    stopWatch.stop();
+
     LOGGER.info(result.toString());
     LOGGER.info(result.getAllChildrenNodesSize() + "");
+    LOGGER.info("Time for getting snapshots " + stopWatch.getTime() + " ms");
     LOGGER.info("XXXXXXXXXXXXXX");
-
-//    final PathWalker pathWalker = new PathWalker(requestDTO.getRootSnapshotId());
-//
-//    final List<ModuleInfo> modules = getModules(requestDTO.getRootSnapshotId());
-//
-//    LOGGER.info("Number of modules: " + modules.size());
-//
-//    if (!modules.isEmpty()) {
-//      for (ModuleInfo module : modules) {
-//        VisualizationRequest moduleTemp =
-//          new VisualizationRequest(module.getId(), requestDTO.getViewType(),
-//            requestDTO.getFootprintMetricId(), requestDTO.getHeightMetricId());
-//
-//        SonarSnapshotBuilder builder = new SonarSnapshotBuilder(module.getId()).withPath(module.getName());
-//
-//        SonarSnapshot moduleElement = builder.build();
-//        LOGGER.info(moduleElement.toString());
-//        pathWalker.addPath(moduleElement);
-//
-//        addModuleToTreeWalker(pathWalker, moduleTemp, module.getName());
-//      }
-//    } else {
-//      addModuleToTreeWalker(pathWalker, requestDTO, "");
-//    }
-
-    return result;
-  }
-
-  private void addModuleToTreeWalker(PathWalker pathWalker, final VisualizationRequest requestDTO,
-    final String moduleName) {
-    final List<SonarSnapshot> flatChildren = this.daoService.getFlatChildrenWithMetrics(requestDTO);
-
-    for (final SonarSnapshot flatChild : flatChildren) {
-      if (moduleName.length() > 0) {
-        flatChild.setPath(moduleName + "/" + flatChild.getPath());
-      }
-
-      pathWalker.addPath(flatChild);
-    }
-  }
-
-  private List<ModuleInfo> getModules(int rootSnapshotId) {
-    List<ModuleInfo> result = this.daoService.getDirectModuleChildrenIds(rootSnapshotId);
-
-    if (result == null || result.isEmpty()) {
-      result = new ArrayList<>();
-    }
 
     return result;
   }

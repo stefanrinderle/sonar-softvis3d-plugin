@@ -24,11 +24,12 @@ import de.rinderle.softvis3d.domain.sonar.SonarSnapshot;
 import de.rinderle.softvis3d.domain.sonar.SonarSnapshotBuilder;
 import de.rinderle.softvis3d.domain.tree.RootTreeNode;
 import de.rinderle.softvis3d.preprocessing.tree.PathWalker;
-import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
+import org.sonar.api.resources.Scopes;
 
 /**
  * This class encapsulates the Project info.
@@ -47,10 +48,10 @@ public class ProjectWrapper {
 
     for (Resource file : allFiles) {
       SonarSnapshot moduleElement = new SonarSnapshotBuilder((int) file.getId())
-              .withPath(file.getName())
-              .withFootprintMeasure(50.0)
-              .withHeightMeasure(50.0)
-              .build();
+        .withPath(file.getName())
+        .withFootprintMeasure(50.0)
+        .withHeightMeasure(50.0)
+        .build();
 
       pathWalker.addPath(moduleElement);
     }
@@ -84,29 +85,25 @@ public class ProjectWrapper {
 
     for (Resource directory : directories) {
       // check really for directories, otherwise write big info message
-      if (!directory.getScope().equals("DIR")) {
+      if (!directory.getScope().equals(Scopes.DIRECTORY)) {
         LOGGER.info("--------------------------NOT A DIR ------- " + directory.getId());
       }
 
       result.addAll(initDirectory(directory));
-
     }
 
-    for (Resource file : result) {
-      // check really for directories, otherwise write big info message
-      if (!file.getScope().equals("FIL")) {
-        LOGGER.info("--------------------------NOT A FILE ------- " + file.getId());
-      } else {
-        if (prefix) {
-          LOGGER.info("---Would set prefix");
-//           TODO: get a short good key
-          file.setName(module.getKey() + "/" + file.getName());
-        }
-      }
-    }
-
+    addModulePrefix(result, module, prefix);
 
     return result;
+  }
+
+  private void addModulePrefix(List<Resource> result, Resource module, boolean prefix) {
+    for (Resource file : result) {
+      if (prefix) {
+        // TODO: get a short good key
+        file.setName(module.getKey() + "/" + file.getName());
+      }
+    }
   }
 
   private List<Resource> initDirectory(Resource directory) throws ApiException {
@@ -114,7 +111,7 @@ public class ProjectWrapper {
 
     for (Resource file : files) {
       // check really for directories, otherwise write big info message
-      if (!file.getScope().equals("FIL")) {
+      if (!file.getScope().equals(Scopes.FILE)) {
         LOGGER.info("--------------------------NOT A FILE ------- " + file.getId());
       } else {
         if (!directory.getName().equals("/")) {

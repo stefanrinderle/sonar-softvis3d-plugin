@@ -23,14 +23,14 @@ ThreeViewer.BackendService = function ($http) {
   this.http = $http;
 };
 
-ThreeViewer.BackendService.prototype.getVisualization = function (snapshotId, resourceId, footprintMetricId, heightMetricId, viewType) {
-  return this.http.get("../../api/softVis3D/getVisualization?snapshotId=" + snapshotId
-      + "&resourceId=" + resourceId
+ThreeViewer.BackendService.prototype.getVisualization = function (resourceId, footprintMetricId, heightMetricId, viewType) {
+  return this.http.get("../../api/softVis3D/getVisualization"
+      + "?resourceId=" + resourceId
       + "&footprintMetricId=" + footprintMetricId
       + "&heightMetricId=" + heightMetricId
       + "&viewType=" + viewType);
 };
 
-ThreeViewer.BackendService.prototype.getConfig = function (snapshotId, resourceId) {
-  return this.http.get("../../api/softVis3D/getConfig?snapshotId=" + snapshotId + "&resourceId=" + resourceId);
+ThreeViewer.BackendService.prototype.getConfig = function (resourceId) {
+  return this.http.get("../../api/softVis3D/getConfig?resourceId=" + resourceId);
 };

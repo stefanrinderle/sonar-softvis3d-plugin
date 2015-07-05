@@ -13,7 +13,6 @@
   };
 
   var ThreeViewer = {};
-  ThreeViewer.SNAPSHOT_ID = <%= @snapshot.id %>;
   ThreeViewer.RESOURCE_ID = <%= @resource.id %>;
 
   var RESOURCES_BASE_PATH = "<%= "#{ApplicationController.root_context}" -%>";
@@ -76,7 +75,7 @@
   }
 
   window.onload = function () {
-    ThreeViewer.SNAPSHOT_ID = <%= @snapshot.id %>;
+    ThreeViewer.RESOURCE_ID = <%= @resource.id %>;
 
     <%
     if !@snapshot.id.blank? && !params[:viewType].blank? &&

@@ -79,7 +79,7 @@ public class SonarAccess {
       // specify the get request
       HttpGet getRequest = new HttpGet(urlPath);
 
-      LOGGER.info("executing request to " + getRequest.toString());
+      LOGGER.debug("executing request to " + getRequest.toString());
 
       HttpResponse httpResponse = httpclient.execute(target, getRequest);
       HttpEntity entity = httpResponse.getEntity();

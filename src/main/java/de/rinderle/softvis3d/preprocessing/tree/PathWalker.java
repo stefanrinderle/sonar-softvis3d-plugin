@@ -52,7 +52,7 @@ public class PathWalker {
   }
 
   public void addPath(final SonarSnapshot element) {
-    LOGGER.info("add path " + element.getPath());
+    LOGGER.debug("add path " + element.getPath());
 
     String[] names = this.pathSeparator.split(element.getPath());
 

@@ -22,10 +22,6 @@ package de.rinderle.softvis3d.webservice.config;
 import com.google.inject.Inject;
 import de.rinderle.softvis3d.dao.entity.Metric;
 import de.rinderle.softvis3d.dao.entity.MetricAdapter;
-import de.rinderle.softvis3d.dao.entity.ProjectWrapper;
-import de.rinderle.softvis3d.dao.webservice.SonarAccess;
-import de.rinderle.softvis3d.domain.tree.RootTreeNode;
-import de.rinderle.softvis3d.preprocessing.PreProcessor;
 import de.rinderle.softvis3d.webservice.AbstractWebserviceHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,8 +42,6 @@ public class ConfigWebserviceHandler extends AbstractWebserviceHandler implement
 
   @Inject
   private MetricAdapter metricAdapter;
-//  @Inject
-//  private ProjectWrapper projectWrapper;
 
   private Settings settings;
 
@@ -57,17 +51,8 @@ public class ConfigWebserviceHandler extends AbstractWebserviceHandler implement
 
   @Override
   public void handleRequest(final Request request, final Response response) throws Exception {
-    final Integer id = Integer.valueOf(request.param("snapshotId"));
     final Integer resourceId = Integer.valueOf(request.param("resourceId"));
-    LOGGER.info("ConfigWebserviceHandler snapshot: " + id + " resource " + resourceId);
-
-//    String url = "http://localhost";
-//    SonarAccess sonarAccess = new SonarAccess(url, "admin", "admin");
-//    RootTreeNode result = projectWrapper.initializeProject(resourceId);
-//
-//    LOGGER.info(result.toString());
-//    LOGGER.info(result.getAllChildrenNodesSize() + "");
-//    LOGGER.info("XXXXXXXXXXXXXX");
+    LOGGER.info("ConfigWebserviceHandler snapshot: " + resourceId + " resource " + resourceId);
 
     final String metric1Key = this.settings.getString("metric1");
     final String metric2Key = this.settings.getString("metric2");

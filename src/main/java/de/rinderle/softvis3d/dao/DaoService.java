@@ -22,15 +22,10 @@ package de.rinderle.softvis3d.dao;
 import com.google.inject.Inject;
 import de.rinderle.softvis3d.dao.dto.MetricResultDTO;
 import de.rinderle.softvis3d.domain.MinMaxValue;
-import de.rinderle.softvis3d.domain.VisualizationRequest;
 import de.rinderle.softvis3d.domain.sonar.ModuleInfo;
 import de.rinderle.softvis3d.domain.sonar.SonarDependency;
-import de.rinderle.softvis3d.domain.sonar.SonarSnapshot;
-import de.rinderle.softvis3d.domain.sonar.SonarSnapshotBuilder;
-import org.apache.commons.lang.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sonar.api.config.Settings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,16 +43,6 @@ public class DaoService {
   private DependencyDao dependencyDao;
   @Inject
   private ScmCalculationService scmCalculationService;
-
-  public Integer getMetric1FromSettings(final Settings settings) {
-    LOGGER.debug("getMetric1FromSettings");
-    return this.sonarDao.getMetricIdByKey(settings.getString("metric1"));
-  }
-
-  public Integer getMetric2FromSettings(final Settings settings) {
-    LOGGER.debug("getMetric2FromSettings");
-    return this.sonarDao.getMetricIdByKey(settings.getString("metric2"));
-  }
 
   public MinMaxValue getMinMaxMetricValuesByRootSnapshotId(int rootSnapshotId, String metricKey) {
     LOGGER.debug("getMinMaxMetricValuesByRootSnapshotId " + rootSnapshotId);
@@ -106,41 +91,6 @@ public class DaoService {
         result.addAll(this.dependencyDao.getDependencies(module.getId()));
       }
     }
-
-    return result;
-  }
-
-  public List<SonarSnapshot> getFlatChildrenWithMetrics(final VisualizationRequest requestDTO) {
-    final List<SonarSnapshot> result = new ArrayList<SonarSnapshot>();
-
-    final StopWatch stopWatch = new StopWatch();
-    stopWatch.start();
-
-    // final Integer authorMetricId = this.sonarDao.getMetricIdByKey(SCM_DATE_NAME);
-    // final Integer authorDateMetricId = this.sonarDao.getMetricIdByKey(SCM_DATE_NAME);
-    final List<MetricResultDTO<Integer>> snapshots = sonarDao.getAllSnapshotIdsWithRescourceId(
-      requestDTO.getRootSnapshotId());
-
-    for (MetricResultDTO<Integer> snapshot : snapshots) {
-      final Integer snapshotId = snapshot.getId();
-      SonarSnapshotBuilder builder = new SonarSnapshotBuilder(snapshotId);
-      builder.withPath(sonarDao.getResourcePath(snapshot.getValue()));
-//      builder.withFootprintMeasure(sonarDao.getMetricDouble(requestDTO.getFootprintMetricId(), snapshotId));
-//      builder.withHeightMeasure(sonarDao.getMetricDouble(requestDTO.getHeightMetricId(), snapshotId));
-
-      // TODO: do something with this information here or delete.
-      // final String authors = this.sonarDao.getMetricText(authorMetricId, snapshotId);
-      // final String authorDateMetric = this.sonarDao.getMetricText(authorDateMetricId, snapshotId);
-
-      // int differentAuthors = scmCalculationService.getDifferentAuthors(authors, authorDateMetric);
-
-      SonarSnapshot snapshotResult = builder.build();
-
-      result.add(snapshotResult);
-    }
-
-    stopWatch.stop();
-    LOGGER.info("Time for getting snapshots " + stopWatch.getTime() + " ms");
 
     return result;
   }

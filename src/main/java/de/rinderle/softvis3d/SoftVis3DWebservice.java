@@ -56,13 +56,11 @@ public class SoftVis3DWebservice implements WebService {
     controller.setDescription("SoftVis3D webservice");
 
     controller.createAction("getConfig").setDescription("Get config for snapshot").setHandler(this.configHandler)
-      .createParam("snapshotId", "Snapshot id")
       .createParam("resourceId", "Resource id");
 
     // create the URL /api/softVis3D/getVisualization
     controller.createAction("getVisualization").setDescription("Get getVisualization structure")
       .setHandler(this.visualizationHandler)
-      .createParam("snapshotId", "Snapshot id")
       .createParam("resourceId", "Resource id")
       .createParam("footprintMetricKey", "Footprint metric key")
       .createParam("heightMetricKey", "Height metric key").createParam("viewType", "Current view type");

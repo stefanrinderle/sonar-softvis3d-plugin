@@ -23,15 +23,12 @@ import com.google.inject.Singleton;
 import de.rinderle.softvis3d.dao.dto.MetricResultDTO;
 import de.rinderle.softvis3d.domain.MinMaxValue;
 import de.rinderle.softvis3d.domain.sonar.ModuleInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sonar.api.database.DatabaseSession;
 import org.sonar.api.database.model.MeasureModel;
 import org.sonar.api.database.model.ResourceModel;
 import org.sonar.api.database.model.Snapshot;
 import org.sonar.api.resources.Qualifiers;
 
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import java.util.ArrayList;
@@ -42,8 +39,6 @@ import java.util.List;
  */
 @Singleton
 public class SonarDao {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(SonarDao.class);
 
   private DatabaseSession session;
 
@@ -98,26 +93,6 @@ public class SonarDao {
     return new MinMaxValue(0.0, 100.0);
   }
 
-  public List<MetricResultDTO<Integer>> getAllSnapshotIdsWithRescourceId(final Integer rootSnapshotId) {
-    final String sqlQuery =
-      "SELECT s.id, s.resourceId FROM " + Snapshot.class.getSimpleName() + " s "
-        + "WHERE (s.path LIKE :idRoot OR s.path LIKE :idModule) AND s.qualifier = 'FIL' ";
-
-    final Query query = this.session.createQuery(sqlQuery);
-
-    query.setParameter("idRoot", rootSnapshotId + ".%");
-    query.setParameter("idModule", "%." + rootSnapshotId + ".%");
-
-    List<Object[]> sqlResult = query.getResultList();
-
-    final List<MetricResultDTO<Integer>> result = new ArrayList<MetricResultDTO<Integer>>();
-    for (Object[] aSqlResult : sqlResult) {
-      result.add(new MetricResultDTO<Integer>((Integer) aSqlResult[0], (Integer) aSqlResult[1]));
-    }
-
-    return result;
-  }
-
   public List<MetricResultDTO<String>> getMetricTextForAllProjectElementsWithMetric(final Integer rootSnapshotId,
     final Integer metricId) {
     final StringBuilder sb = new StringBuilder();
@@ -145,53 +120,6 @@ public class SonarDao {
     }
 
     return result;
-  }
-
-  public String getResourcePath(final Integer resourceId) {
-    final String sqlQuery =
-      "SELECT r.path FROM " + ResourceModel.class.getSimpleName() + " r "
-        + "WHERE r.id = :resourceId";
-
-    final Query query = this.session.createQuery(sqlQuery);
-    query.setParameter("resourceId", resourceId);
-
-    final String result = (String) query.getSingleResult();
-    return result;
-  }
-
-  public Double getMetricDouble(final int metricId, final Integer snapshotId) {
-    final String sqlQuery =
-      "SELECT m.value FROM " + MeasureModel.class.getSimpleName() + " m "
-        + "WHERE m.snapshotId = :snapshotId AND m.metricId = :metricId";
-
-    final Query query = this.session.createQuery(sqlQuery);
-    query.setParameter("snapshotId", snapshotId);
-    query.setParameter("metricId", metricId);
-
-    try {
-      final Double result = (Double) query.getSingleResult();
-      return result;
-    } catch (NoResultException e) {
-      LOGGER.error("getMetricDouble for metricId " + metricId + " and snapshotId " + snapshotId + ": " + e.getMessage());
-      return 0.0;
-    }
-  }
-
-  public String getMetricText(final int metricId, final Integer snapshotId) {
-    final String sqlQuery =
-      "SELECT m.textValue FROM " + MeasureModel.class.getSimpleName() + " m "
-        + "WHERE m.snapshotId = :snapshotId AND m.metricId = :metricId";
-
-    final Query query = this.session.createQuery(sqlQuery);
-    query.setParameter("snapshotId", snapshotId);
-    query.setParameter("metricId", metricId);
-
-    try {
-      return (String) query.getSingleResult();
-    } catch (NoResultException e) {
-      LOGGER.error("getMetricText for metricId " + metricId + " and snapshotId " + snapshotId + ": " + e.getMessage());
-      return null;
-    }
   }
 
 }

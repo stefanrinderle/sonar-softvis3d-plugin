@@ -35,7 +35,7 @@ public class ResourceAdapter {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectWrapper.class);
 
-  private ObjectMapper mapper = new ObjectMapper(); // can reuse, share globally
+  private final ObjectMapper mapper = new ObjectMapper(); // can reuse, share globally
 
   @Inject
   private SonarAccess sonarAccess;
