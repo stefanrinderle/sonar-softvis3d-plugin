@@ -21,8 +21,8 @@ package de.rinderle.softvis3d.domain;
 
 public class MinMaxValue {
 
-  private final Double minValue;
-  private final Double maxValue;
+  private Double minValue;
+  private Double maxValue;
 
   public MinMaxValue(final Double minValue, final Double maxValue) {
     super();
@@ -42,5 +42,13 @@ public class MinMaxValue {
   public String toString() {
     return "MinMaxValue{" + "minValue=" + minValue + ", maxValue="
       + maxValue + '}';
+  }
+
+  public void setMinValue(double minValue) {
+    this.minValue = minValue;
+  }
+
+  public void setMaxValue(double maxValue) {
+    this.maxValue = maxValue;
   }
 }

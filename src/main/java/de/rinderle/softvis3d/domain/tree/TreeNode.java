@@ -168,12 +168,12 @@ public class TreeNode {
     return result;
   }
 
-  public List<TreeNode> getChildrenLeaves() {
-    final List<TreeNode> result = new ArrayList<TreeNode>();
+  public List<ValueTreeNode> getChildrenLeaves() {
+    final List<ValueTreeNode> result = new ArrayList<>();
 
     for (final TreeNode child : children.values()) {
       if (child.getChildren().isEmpty()) {
-        result.add(child);
+        result.add((ValueTreeNode) child);
       }
     }
 

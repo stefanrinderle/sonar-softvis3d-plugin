@@ -136,7 +136,7 @@ public class VisualizationWebserviceHandlerTest {
   private SnapshotTreeResult mockPreProcessing(VisualizationRequest requestDTO) throws ApiException {
     final SnapshotStorageKey key = new SnapshotStorageKey(requestDTO);
     final RootTreeNode rootTreeNode = new RootTreeNode(1);
-    final SnapshotTreeResult treeResult = new SnapshotTreeResult(key, rootTreeNode);
+    final SnapshotTreeResult treeResult = new SnapshotTreeResult(key, rootTreeNode, null, null);
 
     when(preProcessor.process(eq(requestDTO))).thenReturn(treeResult);
 

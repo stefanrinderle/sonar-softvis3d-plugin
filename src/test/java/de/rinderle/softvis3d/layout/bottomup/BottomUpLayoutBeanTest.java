@@ -64,7 +64,7 @@ public class BottomUpLayoutBeanTest {
     final SnapshotStorageKey storageKey = new SnapshotStorageKey(requestDTO);
 
     final RootTreeNode tree = new RootTreeNode(snapshotId);
-    final SnapshotTreeResult snapshotTreeResult = new SnapshotTreeResult(storageKey, tree);
+    final SnapshotTreeResult snapshotTreeResult = new SnapshotTreeResult(storageKey, tree, null, null);
 
     LayeredLayoutElement resultElement = LayeredLayoutElement.createLayeredLayoutElement(tree, null, null, null, null);
     when(visitor.visitNode(eq(tree), anyListOf(LayeredLayoutElement.class))).thenReturn(resultElement);

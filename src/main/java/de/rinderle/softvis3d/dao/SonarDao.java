@@ -21,7 +21,6 @@ package de.rinderle.softvis3d.dao;
 
 import com.google.inject.Singleton;
 import de.rinderle.softvis3d.dao.dto.MetricResultDTO;
-import de.rinderle.softvis3d.domain.MinMaxValue;
 import de.rinderle.softvis3d.domain.sonar.ModuleInfo;
 import org.sonar.api.database.DatabaseSession;
 import org.sonar.api.database.model.MeasureModel;
@@ -68,29 +67,6 @@ public class SonarDao {
       this.session.getSingleResult(org.sonar.api.measures.Metric.class, "key", key);
 
     return result.getId();
-  }
-
-  public MinMaxValue getMinMaxMetricValuesByRootSnapshotId(int rootSnapshotId, String metricKey) {
-//    final StringBuilder sb = new StringBuilder();
-//
-//    sb.append("SELECT MIN(m.value), MAX(m.value) ");
-//    sb.append(" FROM ")
-//      .append(MeasureModel.class.getSimpleName())
-//      .append(" m, ")
-//      .append(Snapshot.class.getSimpleName())
-//      .append(" s WHERE m.snapshotId=s.id ")
-//      .append("AND (s.path LIKE :idRoot OR s.path LIKE :idModule) AND ")
-//      .append("m.metricId =:metric_id AND s.scope = 'FIL'");
-//
-//    Query jpaQuery = session.createQuery(sb.toString());
-//
-//    jpaQuery.setParameter("idRoot", rootSnapshotId + ".%");
-//    jpaQuery.setParameter("idModule", "%." + rootSnapshotId + ".%");
-//    jpaQuery.setParameter("metric_id", metricId);
-//
-//    final Object[] result = (Object[]) jpaQuery.getSingleResult();
-//    return new MinMaxValue((Double) result[0], (Double) result[1]);
-    return new MinMaxValue(0.0, 100.0);
   }
 
   public List<MetricResultDTO<String>> getMetricTextForAllProjectElementsWithMetric(final Integer rootSnapshotId,

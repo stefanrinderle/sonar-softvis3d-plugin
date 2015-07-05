@@ -25,6 +25,7 @@ import de.rinderle.softvis3d.cache.SnapshotCacheService;
 import de.rinderle.softvis3d.dao.DaoService;
 import de.rinderle.softvis3d.dao.entity.ApiException;
 import de.rinderle.softvis3d.domain.LayoutViewType;
+import de.rinderle.softvis3d.domain.MinMaxValue;
 import de.rinderle.softvis3d.domain.SnapshotStorageKey;
 import de.rinderle.softvis3d.domain.SnapshotTreeResult;
 import de.rinderle.softvis3d.domain.VisualizationRequest;
@@ -48,6 +49,8 @@ public class PreProcessor {
   private DaoService daoService;
   @Inject
   private DependencyExpander dependencyExpander;
+  @Inject
+  private MinMaxValueFinder minMaxValueFinder;
 
   public SnapshotTreeResult process(VisualizationRequest requestDTO) throws ApiException {
     snapshotCacheService.printCacheContents();
@@ -68,7 +71,10 @@ public class PreProcessor {
         this.dependencyExpander.execute(tree, dependencies);
       }
 
-      result = new SnapshotTreeResult(mapKey, tree);
+      MinMaxValue minMaxMetricFootprint = minMaxValueFinder.getMinMaxMetricFootprint(tree);
+      MinMaxValue minMaxMetricHeight = minMaxValueFinder.getMinMaxMetricHeight(tree);
+
+      result = new SnapshotTreeResult(mapKey, tree, minMaxMetricFootprint, minMaxMetricHeight);
       if (SoftVis3DPlugin.CACHE_ENABLED) {
         this.snapshotCacheService.save(result);
       }

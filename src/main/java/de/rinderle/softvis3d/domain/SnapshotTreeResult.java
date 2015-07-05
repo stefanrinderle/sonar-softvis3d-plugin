@@ -25,11 +25,15 @@ public class SnapshotTreeResult {
 
   private final SnapshotStorageKey snapshotStorageKey;
   private final RootTreeNode tree;
+  private final MinMaxValue minMaxMetricFootprint;
+  private final MinMaxValue minMaxMetricHeight;
 
   public SnapshotTreeResult(final SnapshotStorageKey snapshotStorageKey,
-    final RootTreeNode tree) {
+    final RootTreeNode tree, MinMaxValue minMaxMetricFootprint, MinMaxValue minMaxMetricHeight) {
     this.snapshotStorageKey = snapshotStorageKey;
     this.tree = tree;
+    this.minMaxMetricFootprint = minMaxMetricFootprint;
+    this.minMaxMetricHeight = minMaxMetricHeight;
   }
 
   public SnapshotStorageKey getStorageKey() {
@@ -38,5 +42,13 @@ public class SnapshotTreeResult {
 
   public RootTreeNode getTree() {
     return this.tree;
+  }
+
+  public MinMaxValue getMinMaxMetricFootprint() {
+    return minMaxMetricFootprint;
+  }
+
+  public MinMaxValue getMinMaxMetricHeight() {
+    return minMaxMetricHeight;
   }
 }

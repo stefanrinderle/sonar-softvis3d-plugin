@@ -23,6 +23,7 @@ import de.rinderle.softvis3d.domain.SnapshotTreeResult;
 import de.rinderle.softvis3d.domain.layout.LayeredLayoutElement;
 import de.rinderle.softvis3d.domain.tree.RootTreeNode;
 import de.rinderle.softvis3d.domain.tree.TreeNode;
+import de.rinderle.softvis3d.domain.tree.ValueTreeNode;
 import de.rinderle.softvis3d.layout.dot.DotExecutorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,10 +99,10 @@ public class BottomUpLayoutBean implements BottomUpLayout {
    * Package private for testing purposes.
    */
   List<LayeredLayoutElement> processChildrenLeaves(final TreeNode node) {
-    final List<TreeNode> childrenLeaves = node.getChildrenLeaves();
+    final List<ValueTreeNode> childrenLeaves = node.getChildrenLeaves();
 
     final List<LayeredLayoutElement> layerElements = new ArrayList<LayeredLayoutElement>();
-    for (final TreeNode leaf : childrenLeaves) {
+    for (final ValueTreeNode leaf : childrenLeaves) {
       layerElements.add(visitor.visitFile(leaf));
     }
 

@@ -21,7 +21,6 @@ package de.rinderle.softvis3d.dao;
 
 import com.google.inject.Inject;
 import de.rinderle.softvis3d.dao.dto.MetricResultDTO;
-import de.rinderle.softvis3d.domain.MinMaxValue;
 import de.rinderle.softvis3d.domain.sonar.ModuleInfo;
 import de.rinderle.softvis3d.domain.sonar.SonarDependency;
 import org.slf4j.Logger;
@@ -43,11 +42,6 @@ public class DaoService {
   private DependencyDao dependencyDao;
   @Inject
   private ScmCalculationService scmCalculationService;
-
-  public MinMaxValue getMinMaxMetricValuesByRootResourceId(int rootResourceId, String metricKey) {
-    LOGGER.debug("getMinMaxMetricValuesByRootResourceId " + rootResourceId);
-    return this.sonarDao.getMinMaxMetricValuesByRootSnapshotId(rootResourceId, metricKey);
-  }
 
   public boolean hasDependencies(Integer resourceId) {
     LOGGER.debug("hasDependencies" + resourceId);

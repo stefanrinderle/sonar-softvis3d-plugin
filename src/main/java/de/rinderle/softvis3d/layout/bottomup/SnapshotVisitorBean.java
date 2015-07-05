@@ -27,6 +27,7 @@ import com.google.inject.assistedinject.Assisted;
 import de.rinderle.softvis3d.dao.DaoService;
 import de.rinderle.softvis3d.domain.LayoutViewType;
 import de.rinderle.softvis3d.domain.MinMaxValue;
+import de.rinderle.softvis3d.domain.SnapshotTreeResult;
 import de.rinderle.softvis3d.domain.SoftVis3DConstants;
 import de.rinderle.softvis3d.domain.VisualizationRequest;
 import de.rinderle.softvis3d.domain.graph.ResultPlatform;
@@ -75,7 +76,7 @@ public class SnapshotVisitorBean implements SnapshotVisitor {
   public SnapshotVisitorBean(final LayerFormatter formatter, final DotExecutor dotExecutor,
     final GrappaNodeFactory nodeFactory, final GrappaEdgeFactory edgeFactory,
     final DaoService daoService, @Assisted final Settings settings,
-    @Assisted final VisualizationRequest requestDTO) {
+    @Assisted final VisualizationRequest requestDTO, @Assisted SnapshotTreeResult snapshotTreeResult) {
     this.settings = settings;
 
     this.dotExecutor = dotExecutor;
@@ -83,12 +84,8 @@ public class SnapshotVisitorBean implements SnapshotVisitor {
     this.nodeFactory = nodeFactory;
     this.edgeFactory = edgeFactory;
 
-    this.minMaxMetricFootprint =
-      daoService.getMinMaxMetricValuesByRootResourceId(requestDTO.getRootResourceId(),
-              requestDTO.getFootprintMetricKey());
-    this.minMaxMetricHeight =
-      daoService.getMinMaxMetricValuesByRootResourceId(requestDTO.getRootResourceId(),
-              requestDTO.getHeightMetricKey());
+    this.minMaxMetricFootprint = snapshotTreeResult.getMinMaxMetricFootprint();
+    this.minMaxMetricHeight = snapshotTreeResult.getMinMaxMetricHeight();
 
     this.dependenciesCount = daoService.getDependencies(requestDTO.getRootResourceId()).size();
 

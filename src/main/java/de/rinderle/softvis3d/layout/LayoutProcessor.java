@@ -40,7 +40,7 @@ public class LayoutProcessor {
   public Map<Integer, ResultPlatform> process(Settings settings, VisualizationRequest requestDTO,
     SnapshotTreeResult snapshotTreeResult) throws DotExecutorException {
 
-    final SnapshotVisitor visitor = this.visitorFactory.create(settings, requestDTO);
+    final SnapshotVisitor visitor = this.visitorFactory.create(settings, requestDTO, snapshotTreeResult);
 
     final BottomUpLayout bottomUpLayout = new BottomUpLayoutBean(visitor);
     bottomUpLayout.accept(snapshotTreeResult);
