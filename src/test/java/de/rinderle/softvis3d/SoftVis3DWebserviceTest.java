@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.config.Settings;
 import org.sonar.api.database.DatabaseSession;
+import org.sonar.api.platform.Server;
 import org.sonar.api.server.ws.WebService;
 import org.sonar.api.server.ws.WsTester;
 
@@ -36,7 +37,8 @@ public class SoftVis3DWebserviceTest {
   public void setUp() {
     final DatabaseSession session = null;
     final Settings settings = null;
-    final WebService ws = new SoftVis3DWebservice(session, settings);
+    final Server server = null;
+    final WebService ws = new SoftVis3DWebservice(session, settings, server);
 
     // WsTester is available in the Maven artifact
     // org.codehaus.sonar:sonar-plugin-api

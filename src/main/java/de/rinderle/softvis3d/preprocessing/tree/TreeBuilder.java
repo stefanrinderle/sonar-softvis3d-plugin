@@ -22,7 +22,6 @@ package de.rinderle.softvis3d.preprocessing.tree;
 import com.google.inject.Inject;
 import de.rinderle.softvis3d.dao.entity.ApiException;
 import de.rinderle.softvis3d.dao.entity.ProjectWrapper;
-import de.rinderle.softvis3d.dao.webservice.SonarAccess;
 import de.rinderle.softvis3d.domain.VisualizationRequest;
 import de.rinderle.softvis3d.domain.tree.RootTreeNode;
 import org.apache.commons.lang.time.StopWatch;
@@ -42,8 +41,6 @@ public class TreeBuilder {
     final StopWatch stopWatch = new StopWatch();
     stopWatch.start();
 
-    String url = "http://localhost";
-    SonarAccess sonarAccess = new SonarAccess(url, "admin", "admin");
     RootTreeNode result = projectWrapper.initializeProject(requestDTO);
 
     stopWatch.stop();

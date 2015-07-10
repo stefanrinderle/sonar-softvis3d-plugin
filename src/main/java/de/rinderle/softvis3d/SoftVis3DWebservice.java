@@ -23,20 +23,31 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import de.rinderle.softvis3d.dao.DependencyDao;
 import de.rinderle.softvis3d.dao.SonarDao;
+import de.rinderle.softvis3d.dao.webservice.SonarAccess;
 import de.rinderle.softvis3d.guice.SoftVis3DModule;
 import de.rinderle.softvis3d.webservice.config.ConfigWebserviceHandler;
 import de.rinderle.softvis3d.webservice.visualization.VisualizationWebserviceHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.sonar.api.CoreProperties;
 import org.sonar.api.config.Settings;
 import org.sonar.api.database.DatabaseSession;
+import org.sonar.api.platform.Server;
 import org.sonar.api.server.ws.WebService;
 
 public class SoftVis3DWebservice implements WebService {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(SoftVis3DWebservice.class);
+
   private final VisualizationWebserviceHandler visualizationHandler;
   private final ConfigWebserviceHandler configHandler;
+  private final SonarAccess sonarAccess;
 
-  public SoftVis3DWebservice(final DatabaseSession session, final Settings settings) {
+  public SoftVis3DWebservice(final DatabaseSession session, final Settings settings, final Server server) {
     final Injector softVis3DInjector = Guice.createInjector(new SoftVis3DModule());
+
+    this.sonarAccess = softVis3DInjector.getInstance(SonarAccess.class);
+    this.sonarAccess.initialize(settings.getString(CoreProperties.SERVER_BASE_URL));
 
     final SonarDao sonarDao = softVis3DInjector.getInstance(SonarDao.class);
     sonarDao.setDatabaseSession(session);
@@ -45,9 +56,11 @@ public class SoftVis3DWebservice implements WebService {
 
     this.configHandler = softVis3DInjector.getInstance(ConfigWebserviceHandler.class);
     this.configHandler.setSettings(settings);
+
     this.visualizationHandler = softVis3DInjector.getInstance(VisualizationWebserviceHandler.class);
     this.visualizationHandler.setSettings(settings);
     this.visualizationHandler.setDatabaseSession(session);
+
   }
 
   @Override

@@ -19,11 +19,11 @@
  */
 package de.rinderle.softvis3d.dao.webservice;
 
+import com.google.inject.Singleton;
 import de.rinderle.softvis3d.dao.entity.ApiException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+@Singleton
 public class SonarAccess {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SonarAccess.class);
@@ -41,16 +42,6 @@ public class SonarAccess {
    * Sonar URL (i.e. http://localhost:9000/sonar).
    */
   private String sonarUrl;
-
-  /**
-   * Username for access Sonar WS API. Null for no authentication.
-   */
-  private String username;
-
-  /**
-   * Password for access Sonar WS API. Only used if username != null.
-   */
-  private String password;
 
   /**
    * Sonar host.
@@ -65,16 +56,12 @@ public class SonarAccess {
   public SonarAccess() {
   }
 
-  public SonarAccess(String sonarUrl, String username, String password) throws ApiException {
-    initialize(sonarUrl, username, password);
-  }
-
   public String getUrlAsResultString(String urlPath) throws ApiException {
     HttpClient httpclient = HttpClientBuilder.create().build();
     try {
 
       // specify the host, protocol, and port
-      HttpHost target = new HttpHost("localhost", 9000, "http");
+      HttpHost target = new HttpHost(this.host, this.port);
 
       // specify the get request
       HttpGet getRequest = new HttpGet(urlPath);
@@ -96,14 +83,16 @@ public class SonarAccess {
     }
   }
 
-  private void initialize(String sonarUrl, String username, String password) throws ApiException {
+  public void initialize(String sonarUrl) {
+    LOGGER.info("sonarUrl-------------------------------");
+    LOGGER.info(sonarUrl);
+
     if (!sonarUrl.endsWith("/")) {
       this.sonarUrl = sonarUrl;
     } else {
       this.sonarUrl = sonarUrl.substring(0, sonarUrl.length() - 1);
     }
-    this.username = username;
-    this.password = password;
+
     if (sonarUrl.startsWith("http://")) {
       String withoutProtocol = sonarUrl.substring(7);
       if (withoutProtocol.contains(":")) {
@@ -142,8 +131,6 @@ public class SonarAccess {
       } else {
         this.port = 443;
       }
-    } else {
-      throw new ApiException("Unknown URL format: " + sonarUrl + " (forgot http:// before host?)");
     }
   }
 
