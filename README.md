@@ -1,3 +1,9 @@
+# ! Deprecated !
+
+The SoftVis3D plugin is now part of the SoftVis3D project. To open up the visualization for other platforms or areas, a wrapper project was created [here](https://github.com/stefanrinderle/softvis3d). 
+
+So any new releases and changes on the plugin will be done under the [wrapper project](https://github.com/stefanrinderle/softvis3d).
+
 # SoftVis3D - Software visualization in 3D
 
 Visualize your project in SonarQube. Please take a look at http://softvis3d.com for further details, screenshots and live demo.
