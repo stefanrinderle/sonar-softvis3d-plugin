@@ -58,12 +58,26 @@ public class SonarDao {
 
     final List<org.sonar.api.measures.Metric> metricsTest = session.getResults(org.sonar.api.measures.Metric.class);
     for (final org.sonar.api.measures.Metric metrict : metricsTest) {
-      if (metrict.isNumericType() && !metrict.isHidden() && metrict.getEnabled()) {
-        metrics.add(new Metric(metrict.getId(), metrict.getName()));
-      }
+      checkAndAddMetric(metrics, metrict);
     }
 
     return metrics;
+  }
+
+  private void checkAndAddMetric(List<Metric> metrics, org.sonar.api.measures.Metric metrict) {
+    boolean isHidden = false;
+    if (metrict.isHidden() != null) {
+      isHidden = metrict.isHidden();
+    }
+
+    boolean enabled = true;
+    if (metrict.getEnabled() != null) {
+      enabled = metrict.getEnabled();
+    }
+
+    if (metrict.isNumericType() && !isHidden && enabled) {
+      metrics.add(new Metric(metrict.getId(), metrict.getName()));
+    }
   }
 
   @SuppressWarnings("unchecked")
